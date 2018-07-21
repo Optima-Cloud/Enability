@@ -1,0 +1,38 @@
+<apex:page standardController="RateandAllowance__c" recordSetVar="unused" sidebar="false">
+
+<!-- for this page to work with a specific custom object, change standController="entityname" to custom object api name  
+    For example, if custom object name is Warehouse__c, change first part of the first line to standardController="warehouse__c" -->
+
+    
+
+<apex:form >
+<apex:pageBlock >
+<apex:pageMessages />
+<apex:pageBlock >
+
+Note: All modifications made on the page will be lost if Return button is clicked without clicking the Save button first. 
+</apex:pageBlock>
+<apex:pageBlockButtons >
+<apex:commandButton value="Save" action="{!save}"/>
+<apex:commandButton value="Return" action="{!cancel}"/>
+</apex:pageBlockButtons>
+<apex:pageBlockTable value="{!selected}" var="a" id="table">
+<apex:column headerValue="Name">
+<apex:inputField value="{!a.name}"/>
+</apex:column>
+<apex:column headerValue="Amount ETU EBA">
+ <apex:inputField value="{!a.Amount_ETU_EBA__c}"/>
+ </apex:column> 
+ <apex:column headerValue="Amount LE EBA">
+ <apex:inputField value="{!a.Amount_LE_EBA__c}"/>
+ </apex:column> 
+ <apex:column headerValue="Frequency">
+ <apex:inputField value="{!a.Frequency__c}"/>
+ </apex:column> 
+ <apex:column headerValue="Domain">
+ <apex:inputField value="{!a.Domain__c}"/>
+ </apex:column> 
+</apex:pageBlockTable>
+</apex:pageBlock>
+</apex:form>
+</apex:page>

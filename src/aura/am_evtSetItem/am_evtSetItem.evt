@@ -1,0 +1,4 @@
+<!--c:am_evtSetItem-->
+<aura:event type="APPLICATION">
+    <aura:attribute name="selectedItem" type="String"/>
+</aura:event>

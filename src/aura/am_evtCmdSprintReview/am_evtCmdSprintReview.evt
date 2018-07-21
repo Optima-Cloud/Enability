@@ -1,0 +1,5 @@
+<!--c:am_evtCmdSprintReview-->
+<aura:event type="APPLICATION">
+    <aura:attribute name="commandSelected" type="String"/>
+    <aura:attribute name="selectedCriteria" type="String"/>
+</aura:event>

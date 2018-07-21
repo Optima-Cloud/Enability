@@ -1,0 +1,116 @@
+<apex:page controller="PEN.KPickAnythingConfigEditCon"  tabstyle="PickAnything_Setup__tab">
+
+    <apex:sectionHeader title="PickAnything Config" subtitle="{!gConfig.name}"/>
+    <apex:messages ></apex:messages>
+     
+    <apex:form >
+    
+        
+    
+  <apex:outputpanel >
+        <apex:actionstatus id="pickstatus">
+            <apex:facet name="start">
+                <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb;
+                       height: 100%;opacity:0.65;width:100%;"> 
+                    <div class="waitingHolder" style="top: 74.2px; width: 91px;">
+                        <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                        <span class="waitingDescription">Please Wait...</span>
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionstatus>
+    </apex:outputpanel>
+        
+   
+        <apex:pageBlock title="PickAnything Configuration Details" >
+            <apex:pageBlockButtons >
+                <apex:commandbutton action="{!doSave}" value="Save" status="pickstatus"> </apex:commandbutton>
+                <apex:commandbutton action="{!doCancel}" value="Cancel" status="pickstatus" immediate="true"> </apex:commandbutton>
+            </apex:pageBlockButtons>
+          
+                 <apex:pageblocksection title="Config Details" collapsible="false" columns="2" >
+                    <!-- Name -->
+                    <apex:inputField value="{!gConfig.Name}" required="true" />
+                  	
+ 					<apex:inputCheckbox value="{!gConfig.PEN__Advanced_Settings__c}">
+                        <apex:actionSupport event="onchange" action="{!doRefresh}" rerender="vfconfigvalBlock,vfchildBlock,vfjunction,vfchild,vparentfset,vparent" status="pickstatus"/>
+                       
+ 					</apex:inputCheckbox>
+ 					
+                </apex:pageblocksection>
+    <apex:ActionRegion >
+                <apex:pageblocksection title="Config Settings" collapsible="false" columns="2" >
+                    <!-- Parent Object -->
+            
+                   
+                    <apex:selectList id="vparent" label="1. Parent Object" title="What's the parent object? (Parent Object)" value="{!gConfig.PEN__KParentObjName__c}"  size="1" multiselect="false">                     
+                        <apex:actionSupport event="onchange" action="{!doRefresh}" rerender="vfconfigvalBlock,vfchildBlock,vfjunction,vfchild,vparentfset" status="pickstatus"/>
+                        <apex:selectOptions value="{!glsSelParentObj}"/>
+                    </apex:selectList>                    
+                    <apex:selectList id="vparentfset" label="4. Parent Object Field Set" title="What's the parent object? (Parent Object)"  value="{!gConfig.PEN__KParentObjFS__c}"  size="1" multiselect="false">                        
+                        <apex:actionSupport event="onchange" action="{!doRefresh}"  status="pickstatus"/>
+                        <apex:selectOptions value="{!glsSelParentFSet}"/>
+                    </apex:selectList>
+                    
+                    <!-- Relationship Object -->
+                    
+                        <apex:selectList label="2. Parent to Junction Relationship"  title="How does the parent object relate to the junction object? "   value="{!gConfig.PEN__KParentJunctionRelationName__c}" size="1" multiselect="false" id="vfjunction" >
+                            <apex:actionSupport event="onchange" action="{!doRefresh}" rerender="vfconfigvalBlock,vfchildBlock,vfchild,vjunctionfset" status="pickstatus"/>
+                            <apex:selectOptions value="{!glsSelJunctionObj}"/>
+                        </apex:selectList>                  
+                    
+                    
+                    <apex:selectList id="vjunctionfset" label="5. Junction Object Field Set" title="What's the junction object fieldset"  value="{!gConfig.PEN__KJunctionObjFS__c}"  size="1" multiselect="false">                        
+                        <apex:actionSupport event="onchange" action="{!doRefresh}"  status="pickstatus"/>
+                        <apex:selectOptions value="{!glsSelJunctionFSet}"/>
+                    </apex:selectList>
+                    
+                    <!-- Relationship Object -->
+                    <apex:selectList label="3. Junction Object Child Field" title="What field on the Junction object points to the Child Object?"   value="{!gConfig.PEN__KJunctionChildField__c}" size="1" multiselect="false" id="vfchild" >
+                        <apex:actionSupport event="onchange" action="{!doRefresh}" rerender="vfconfigvalBlock,vfchildBlock,vchildfset" status="pickstatus"/>
+                        <apex:selectOptions value="{!glsSelChildObj}"/>
+                    </apex:selectList>
+                    <apex:selectList id="vchildfset" label="6. Child Object Field Set" title="What's the child object fieldset? "    value="{!gConfig.PEN__KChildObjFS__c}"  size="1" multiselect="false">                      
+                        <apex:actionSupport event="onchange" action="{!doRefresh}"  status="pickstatus"/>
+                        <apex:selectOptions value="{!glsSelChildFSet}"/>
+                    </apex:selectList>
+            </apex:pageblocksection>
+        
+        	<apex:pageBlockSection title="Interface Settings">
+        	        <apex:selectList label="Choose the Visualforce Page" title="This is the page used by the application.  If you're unsure, choose PEN__PickAnything" value="{!gConfig.PEN__KPageName__c}"  size="1" multiselect="false">        	            	                                                      
+                        <apex:selectOptions value="{!mPageSelect}"/>
+                    </apex:selectList>
+                    
+        	     <apex:outputPanel >   
+        	     		This is the page used by the application.  If you're unsure, choose PEN__PickAnything.  
+        	     <br/><br/>
+                      If you edit the Visualforce page used by the interface for an existing configuration, you should remove the old button and generate a new button.
+                 </apex:outputPanel>  
+        	</apex:pageBlockSection>
+        
+            <apex:pageBlockSection columns="1">
+                 
+                <apex:image url="{!URLFOR($Resource.PEN__PAImages,'configdiagram.png')}" width="948" height="299"/>
+                
+            </apex:pageBlockSection>
+                  </apex:ActionRegion>
+        </apex:pageBlock>
+  
+        <!-- 
+       <apex:pageBlock id="vfconfigvalBlock" >
+            <apex:pageblocksection >
+                <apex:outputText value="{!gConfig.PEN__KParentObjName__c}" label="gConfig.KParentObjName__c"/>
+                <apex:outputText value="{!gConfig.KJunctionObjName__c}" label="gConfig.KJunctionObjName__c" />
+                <apex:outputText value="{!gConfig.KChildObjName__c}" label="gConfig.KChildObjName__c"/>
+                <apex:outputText value="{!gConfig.PEN__KParentObjFS__c}" label="gConfig.KParentObjFS__c" />
+                <apex:outputText value="{!gConfig.PEN__KJunctionObjFS__c}" label="gConfig.KJunctionObjFS__c"/>
+                <apex:outputText value="{!gConfig.PEN__KParentJunctionRelationName__c}" label="gConfig.KParentJunctionRelationName__c" />
+                <apex:outputText value="{!gConfig.PEN__KChildObjFS__c}" label="gConfig.KChildObjFS__c" />
+                <apex:outputText value="{!gConfig.KJunctionParentField__c}" label="gConfig.KJunctionParentField__c" />
+                <apex:outputText value="{!gConfig.PEN__KJunctionChildField__c}" label="gConfig.KJunctionChildField__c" />                
+            </apex:pageblocksection>
+        
+       </apex:pageBlock>
+        -->
+   </apex:form>       
+</apex:page>

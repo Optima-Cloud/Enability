@@ -1,0 +1,26 @@
+<aura:component > 
+  <!-- Attributes -->
+  <aura:attribute name="stories" type="Map" />
+  <aura:attribute name="epic" type="Object" />
+
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+    
+    <!-- Custom Events -->
+    <aura:registerEvent name="am_evtEpicChange" type="c:am_evtEpicChange"/>
+    
+<!--      <div class="column" ondrop="{!c.onDrop}" ondragover="{!c.allowDrop}"> -->
+     <div class="column">
+      <div class="panel">
+        <div class="panel-heading">
+          {! v.epic.title }
+         </div>
+        <div class="panel-block column">
+          <div class="columns">
+            <aura:iteration items="{!v.epic.stories}" var="story">
+                 <c:am_subAgileMapStory story="{!story}" />  
+            </aura:iteration> 
+          </div>
+        </div>
+      </div>
+    </div>
+</aura:component>

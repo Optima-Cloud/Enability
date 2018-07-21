@@ -1,0 +1,39 @@
+<aura:component >
+  <aura:attribute name="activitiesEntered" type="Activity__c[]" />
+  <aura:attribute name="hoursTotal" type="Decimal" default="0"/>
+  <aura:attribute name="tempString" type="String" default="hours total"/>
+  <aura:handler event="c:am_evtSetStaffActivity" action="{!c.setStaffActivityData}" value="{!this}"/>
+
+  <!-- / ACTIVITY SELECTION -->
+  <span class="slds-form-element__label slds-size--3-of-3 slds-medium-size--6-of-6 slds-large-size--6-of-12"> Activities done</span>
+
+  <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-m-top--small slds-size--3-of-3 slds-medium-size--6-of-6 slds-large-size--6-of-12">
+  <thead>
+    <tr class="slds-text-title--caps">
+      <th scope="col">
+        <div class="slds-truncate" title="Description">Activity</div>
+      </th>
+      <th scope="col">
+        <div class="slds-truncate" title="Time Worked">Time Worked</div>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <aura:iteration items="{!v.activitiesEntered}" var="activity">
+      <tr> 
+        <td data-label="Activity">
+          <div class="slds-truncate" title="{!activity.Activity__c}">{!activity.Description__c}</div>
+        </td>
+        <td data-label="Hours">
+          <div class="slds-truncate" title="{!activity.Time_Worked__c}">{!activity.Time_Worked__c}</div>
+        </td>         
+       </tr>
+    </aura:iteration> 
+  </tbody>
+ </table> 
+
+  <div class="slds-form-element">
+    <label class="slds-form-element__label" for="totalHours">Total hours for the day</label>
+    <label class="slds-form-element__control" name="totalHours">{!v.hoursTotal}</label>
+</div>
+</aura:component>

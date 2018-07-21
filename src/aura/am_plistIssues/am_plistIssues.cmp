@@ -1,0 +1,12 @@
+<aura:component controller="am_SprintReviewAURA">
+  <aura:attribute name="project" type="String"/>
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+  <aura:registerEvent name="am_evtSetIssue" type="c:am_evtSetIssue"/>
+
+  <!-- / SELECT INPUT -->
+
+  <ui:inputSelect multiple="false" label="Select an issue" aura:id="selectIssue" 
+      class="slds-select" labelClass="slds-form-element__label" change="{!c.setIssue}">
+    <ui:inputSelectOption label="Select issue..." value="0"/>
+  </ui:inputSelect>
+</aura:component>

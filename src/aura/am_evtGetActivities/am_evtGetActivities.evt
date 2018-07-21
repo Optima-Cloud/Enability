@@ -1,0 +1,5 @@
+<!--c:am_evtGetActivities-->
+<aura:event type="APPLICATION">
+    <aura:attribute name="selectedItem" type="String"/>
+    <aura:attribute name="selectedSprint" type="String"/>
+</aura:event>

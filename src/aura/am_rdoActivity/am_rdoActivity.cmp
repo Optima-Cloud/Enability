@@ -1,0 +1,24 @@
+<aura:component controller="am_ActivityTimeEntryLG">
+  <aura:attribute name="activities" type="Activity__c[]" />
+  <aura:attribute name="sprint" type="String"/>
+  <aura:handler event="c:am_evtGetActivities" action="{!c.getActivityData}" value="{!this}"/>
+  <aura:handler event="c:am_evtSetSprint" action="{!c.setSprint}"/>
+  <aura:handler event="c:am_evtResetActivity" action="{!c.resetActivity}" value="{!this}"/>
+  <aura:registerEvent name="am_evtSetActivity" type="c:am_evtSetActivity"/>
+
+  <!-- / ACTIVITY SELECTION -->
+<fieldset class="slds-form-element">
+  <legend class="slds-form-element__legend slds-form-element__label">Select Activity</legend>
+  <div class="slds-form-element__control">
+    <aura:iteration items="{!v.activities}" var="activity">
+      <span class="slds-radio">
+        <input type="radio" id="radioResult" name="options" value="{!activity.Id}" checked="" onchange="{!c.onRadio}"/>
+        <label class="slds-radio__label" for="radioResult">
+          <span class="slds-radio--faux"></span>
+          <span class="slds-form-element__label">{!activity.Description__c}</span>
+        </label>
+      </span> 
+    </aura:iteration>
+  </div>
+</fieldset>
+</aura:component>

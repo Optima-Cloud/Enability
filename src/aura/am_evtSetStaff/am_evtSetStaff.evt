@@ -1,0 +1,4 @@
+<!--c:am_evtSetStaff-->
+<aura:event type="APPLICATION">
+    <aura:attribute name="selectStaff" type="String"/>
+</aura:event>

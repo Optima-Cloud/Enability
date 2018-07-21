@@ -1,0 +1,11 @@
+<aura:component >
+  <aura:attribute name="item" type="Object" required="true"/>
+    
+  <div class="card draggable" draggable="true" ondragstart="{!c.onDragStart}" />
+  <lightning:card >
+    <aura:set attribute="title"> {!v.item.title} </aura:set>
+    <aura:set attribute="footer"> <lightning:badge label="{!v.item.id}"/> </aura:set>
+    <aura:set attribute="actions"> <lightning:button label="Edit"/> </aura:set>
+    <p class="slds-p-horizontal--small"> {!v.item.description} </p>
+  </lightning:card> 
+</aura:component>

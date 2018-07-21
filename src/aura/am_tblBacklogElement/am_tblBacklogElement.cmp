@@ -1,0 +1,92 @@
+<aura:component controller="am_BacklogQueueAURA">
+  <aura:attribute name="mapBacklog" type="map"/>
+  <aura:attribute name="key" type="string"/>
+  <aura:attribute name="listBacklogElements" type="string"/>
+  <aura:attribute name="selectedItems" type="String[]" default=""/> 
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+  <aura:registerEvent name="am_evtSetBacklogElement" type="c:am_evtSetBacklogElement"/>
+    
+  <!-- / BACKLOG TABLE -->
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_striped slds-m-top--small">
+      <thead>
+        <tr class="slds-text-title--caps">
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Select">Select</div>
+          </th>
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Item">Item</div>
+          </th>
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Component">Component</div>
+          </th>
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Issue">Issue</div>
+          </th>
+         <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Last Stage">Last Stage</div>
+          </th>
+         <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Build Stage">Build Stage</div>
+          </th>
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Incomplete">Incomplete</div>
+          </th>
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Started">Started</div>
+          </th>
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Finished">Finished</div>
+          </th>
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Quantity">Quantity</div>
+          </th>
+         </tr>
+      </thead>
+      <tbody>
+        <aura:iteration items="{!v.listBacklogElements}" var="list">
+          <tr> 
+            <td scope="row" data-label="Item" class="slds-cell-wrap">
+              <span class="slds-checkbox ">
+                <input class="itemCheckbox" type="checkbox" name="options" id="{!list.itemID}" value="{!list.itemID}" 
+                       checked="" onchange="{!c.onChange}"/>
+                <label class="slds-checkbox__label" for="{!list.itemID}">
+                  <span class="slds-checkbox_faux"></span>
+                  <span class="slds-form-element__label"></span>
+                </label>
+              </span>
+            </td> 
+            <td data-label="Item" class="slds-cell-wrap" >
+              <div class="slds-truncate" title="{!list.itemTitle}">{!list.itemTitle}</div>
+            </td>
+            <td data-label="Component" class="slds-cell-wrap" style="{!'background-color:' + (list.numberFinished == list.quantity ?'#FFC200' : '#ff0000') }">
+              <div class="slds-truncate" title="{!list.componentTitle}">{!list.componentTitle}</div>
+            </td>           
+            <td data-label="Stage" class="slds-cell-wrap">
+              <aura:iteration items="{!list.issueTitle}" var="lists">
+                <div class="slds-truncate" title="{!lists}">{!lists}</div>
+              </aura:iteration>
+            </td>         
+            <td scope="row" data-label="Item" class="slds-cell-wrap">
+              <div class="slds-truncate" title="{!list.lastStage}">{!list.lastStage}</div>
+            </td> 
+            <td scope="row" data-label="Item" class="slds-cell-wrap">
+              <div class="slds-truncate" title="{!list.buildStage}">{!list.buildStage}</div>
+            </td> 
+            <td scope="row" data-label="Item" class="slds-cell-wrap">
+              <div class="slds-truncate" title="{!list.numberIncomplete}">{!list.numberIncomplete}</div>
+            </td> 
+            <td scope="row" data-label="Item" class="slds-cell-wrap">
+              <div class="slds-truncate" title="{!list.numberStarted}">{!list.numberStarted}</div>
+            </td>     
+            <td data-label="Stage" class="slds-cell-wrap">
+              <div class="slds-truncate" title="{!list.numberFinished}">{!list.numberFinished}</div>
+            </td>         
+            <td data-label="Stage" class="slds-cell-wrap">
+              <div class="slds-truncate" title="{!list.quantity}">{!list.quantity}</div>
+            </td>         
+          </tr>
+        </aura:iteration> 
+      </tbody> 
+    </table>
+  <!-- END BACKLOG TABLE -->
+ </aura:component>

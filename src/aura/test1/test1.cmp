@@ -1,0 +1,6 @@
+<aura:component access="global" >
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+  <aura:handler event="c:evt_SetBillingAccount" action="{!c.setStage}"/>
+
+test1	check 
+</aura:component>

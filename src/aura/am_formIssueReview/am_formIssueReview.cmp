@@ -1,0 +1,123 @@
+<aura:component controller="am_formReviewIssueAURA">
+  <aura:attribute name="notModal" type="Boolean" default="true"/> 
+  <aura:attribute name="showHeader" type="Boolean" default="true"/>
+  <aura:attribute name="itemIssues" type="Issue_Item__c[]"/>
+  <aura:attribute name="itemsAndIssues" type="am_BacklogQueueElement[]"/>
+  <aura:attribute name="project" type="String"/>
+  <aura:attribute name="level" type="String" default=""/> 
+  <aura:attribute name="item" type="String"/>
+  <aura:attribute name="showItemIssueForm" type="Boolean" default="false"/>
+  <aura:attribute name="showSaveButton" type="Boolean" default="false"/> 
+  <aura:attribute name="source" type="string" default=""/>
+  <aura:attribute name="initLoad" type="Boolean" default="true"/> 
+  <aura:handler event="c:am_evtSaveIssue" action="{!c.saveIssues}"/>
+  <aura:handler event="c:am_evtSetItemIssue" action="{!c.setItem}"/>
+  <aura:handler event="c:am_evtSetProject" action="{!c.setProject}"/> 
+  <aura:handler event="c:am_evtSetLevel" action="{!c.setLevel}"/>
+
+  <lightning:spinner class="slds-hide" variant="brand" size="large" aura:id="loadSpinner"/>
+
+  <!-- / PAGE HEADER -->
+  <aura:if isTrue="{!and(v.showHeader, v.notModal)}">
+    <div class="slds-page-header">
+      <div class="slds-media">
+        <div class="slds-media__figure">
+          <span class="slds-icon_container slds-icon-standard-opportunity" title="Description of icon when needed">
+            <lightning:icon iconName="custom:custom39" size="large" alternativeText="Review issue"/>
+          </span>
+        </div>
+        <div class="slds-media__body">
+          <h1 class="slds-page-header__title slds-truncate slds-align-middle" title="Issue Review">Build Review</h1>
+          <p class="slds-text-body_small slds-line-height_reset">Update issues and build status for specific items</p>
+        </div>
+      </div>
+    </div>
+  </aura:if>
+
+  <div>
+    <lightning:layout >
+      <aura:if isTrue="{!and(v.showHeader, v.notModal)}">
+        <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+          <div>
+            <c:am_plistProjects />
+          </div>
+        </lightning:layoutItem>  
+ 
+        <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+         <div>
+           <c:am_plistLevels /> 
+         </div>
+       </lightning:layoutItem>  
+
+        <aura:if isTrue="{!v.showSaveButton == true}">
+          <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+            <div>
+              <div aura:id="buttonsHere" class="slds-text-align--centre "></div>
+            </div>
+          </lightning:layoutItem>  
+        </aura:if>
+      </aura:if>
+    </lightning:layout>
+  </div>
+
+    <!-- ITEM AND ISSUES -->
+  <aura:if isTrue="{!v.showItemIssueForm}">
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_striped slds-m-top--small">
+      <thead>
+        <tr class="slds-text-title--caps">
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Item">Item</div>
+          </th>
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Issue">Issue</div>
+          </th>
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Resolved">Resolved</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <aura:iteration items="{!v.itemsAndIssues}" var="list">
+          <tr> 
+            <td cope="row" data-label="Item" class="slds-cell-wrap">
+              <div class="slds-truncate" title="{!list.itemTitle}">{!list.itemTitle}</div>
+            </td> 
+             <td data-label="Issue" class="slds-cell-wrap">
+              <aura:iteration items="{!list.issue}" var="lists">
+              <div class="slds-truncate slds-p-bottom_x-small" title="{!lists.Issue_Title__c}" >{!lists.Issue_Title__c}</div>
+              </aura:iteration>
+            </td>         
+            <td data-label="Issue" class="slds-cell-wrap">
+              <aura:iteration items="{!list.issue}" var="lists">
+                <div class="slds-form-element">
+                  <div class="slds-form-element__control">
+                    <span class="slds-checkbox ">
+                       <input class="issueItemCheckbox" type="checkbox" name="issues" id="{!lists.Id}" value="{!lists.Resolved__c}" checked="{!if(!lists.Resolved__c,'','checked' )}"/>
+                      <label class="slds-checkbox__label" for="{!lists.Id}">
+                        <span class="slds-checkbox_faux">
+                        </span>
+                      </label>
+                     </span>
+                  </div>
+                </div>
+              </aura:iteration>
+            </td>         
+          </tr>
+        </aura:iteration> 
+      </tbody> 
+    </table>
+  </aura:if>
+    <!-- END ITEM AND ISSUES -->
+
+
+   <aura:if isTrue="{!and(v.showSaveButton, v.notModal)}">
+    <lightning:layout verticalAlign="center">
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small ">
+        <div>
+          <div aura:id="buttonsBottomHere" class="slds-text-align--centre "></div>
+        </div>
+      </lightning:layoutItem>  
+    </lightning:layout> 
+  </aura:if>
+
+</aura:component>

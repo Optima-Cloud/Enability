@@ -1,0 +1,24 @@
+<apex:page standardcontroller="Progress__c" recordsetVar="Progress" sidebar="false">
+    <apex:form >
+        <apex:pageBlock title="Progress" id="progress_list" mode="inlineEdit">
+            <apex:pageBlockButtons >
+                <apex:commandbutton value="save" action="{!quicksave}"/>
+            </apex:pageBlockButtons>
+
+            Filter: 
+            <apex:selectList value="{! filterId }" size="1">
+                <apex:selectOptions value="{! listViewOptions }"/>
+                <apex:actionSupport event="onchange" reRender="progress_list"/>
+            </apex:selectList>
+
+            <apex:pageBlockTable value="{!Progress}"  var="p">
+                <apex:column value="{!p.Name}"/>
+                <apex:column value="{!p.Area__c}"/>
+                <apex:column value="{!p.Comment__c}"/>
+                <apex:column value="{!p.Level__c}"/>
+                <apex:column value="{!p.Wing__c}"/>
+                <apex:column value="{!p.Stage__c}"/>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        </apex:form>
+</apex:page>

@@ -1,0 +1,8 @@
+<apex:page action="if('{!Activity__c.Status__c}' != null,1,2)" standardController="Activity__c">
+     <apex:pageBlock >
+        <apex:PageMessage summary="You are not allowed to delete Accounts"
+            severity="Warning"
+            strength="3"/>
+        <apex:pageMessages /> 
+    </apex:pageBlock>
+</apex:page>

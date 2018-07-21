@@ -1,0 +1,8 @@
+<!--c:am_evtGetItems-->
+<aura:event type="APPLICATION">
+    <aura:attribute name="projectSelected" type="String"/>
+    <aura:attribute name="sprintSelected" type="String"/>
+    <aura:attribute name="levelSelected" type="String"/>
+    <aura:attribute name="aggregateItemSelected" type="String"/>
+    <aura:attribute name="requestSource" type="String"/>
+</aura:event>

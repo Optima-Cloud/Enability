@@ -1,0 +1,27 @@
+<aura:component controller="am_SprintReviewAURA">
+  <aura:attribute name="project" type="String"/>
+  <aura:attribute name="issues" type="Issue__c[]" />
+  <aura:attribute name="selectedInputIssues" type="Issue__c[]" />
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+  <aura:handler event="c:am_evtGetIssues" action="{!c.getIssuesData}"/>
+  <aura:handler event="c:am_evtResetIssue" action="{!c.resetIssuesData}"/>
+  <aura:registerEvent name="am_evtSetIssue" type="c:am_evtSetIssue"/>
+
+  <!-- / SELECT INPUT -->
+  <fieldset class="slds-form-element">
+    <legend class="slds-form-element__legend slds-form-element__label">Select an existing Issue</legend>
+    <div class="slds-form-element">
+      <div class="slds-form-element__control">
+        <aura:iteration items="{!v.issues}" var="issue">
+        <span class="slds-checkbox slds-p-top_large">
+          <input class="issueCheckbox" type="checkbox" name="options" id="{!issue.Id}" value="{!issue.Id}" checked="" onchange="{!c.onChange}"/>
+          <label class="slds-checkbox__label" for="{!issue.Id}">
+            <span class="slds-checkbox_faux"></span>
+            <span class="slds-form-element__label">{!issue.Title__c}</span>
+          </label>
+        </span>
+        </aura:iteration>
+      </div>
+    </div>
+  </fieldset>
+</aura:component>

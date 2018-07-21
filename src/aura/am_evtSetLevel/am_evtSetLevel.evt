@@ -1,0 +1,4 @@
+<!--c:am_evtSetLevel-->
+<aura:event type="APPLICATION">
+    <aura:attribute name="levelSelected" type="String"/>
+</aura:event>

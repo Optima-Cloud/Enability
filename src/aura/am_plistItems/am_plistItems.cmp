@@ -1,0 +1,21 @@
+<aura:component controller="am_SprintReviewAURA">
+  <aura:attribute name="project" type="string" default=""/>
+  <aura:attribute name="sprint" type="string" default=""/>
+  <aura:attribute name="level" type="string" default=""/>
+  <aura:attribute name="item" type="string" default=""/>
+  <aura:attribute name="aggregateItem" type="string" default=""/>
+  <aura:attribute name="allowableSource" type="string" default=""/>
+  <aura:attribute name="requestSource" type="string" default=""/>
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+  <aura:handler event="c:am_evtGetItems" action="{!c.getItemsData}"/>
+  <aura:registerEvent name="am_evtSetItem" type="c:am_evtSetItem"/>
+
+  <!-- / SELECT INPUT -->
+
+  <div>
+    <ui:inputSelect multiple="false" label="Select an Item" aura:id="selectItem" 
+      class="slds-select" labelClass="slds-form-element__label"  change="{!c.setItem}">
+      <ui:inputSelectOption label="Select an item first" value="0"/>
+    </ui:inputSelect>
+  </div>
+</aura:component>

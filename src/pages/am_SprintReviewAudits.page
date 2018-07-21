@@ -1,0 +1,747 @@
+<apex:page standardController="Sprint__c" extensions="am_ItemComponentUseExt,am_ActivityExt"  sidebar="false">
+  <html ng-app="PicklistExample" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jsf="http://xmlns.jcp.org/jsf" lang="en">
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" />
+    <apex:includeScript value="{!URLFOR($Resource.ALJS, '/jquery.aljs-all-with-moment.min.js')}"/>
+
+    <head>
+      <apex:slds />
+    </head>
+
+    <apex:form > 
+      <div class="slds-scope">
+  
+        <!--************   PAGE HEADER   *******************-->     
+        <div class="slds-page-header"> 
+          <div class="slds-grid">
+            <div class="slds-col slds-has-flexi-truncate">
+              <div class="slds-media slds-no-space slds-grow"> 
+                <div class="slds-media__figure">
+                  <svg class="slds-icon slds-icon-custom-custom9" aria-hidden="true">
+                    <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/custom-sprite/svg/symbols.svg#custom9')}"></use>
+                  </svg>
+                </div>
+                <div class="slds-media__body">
+                  <p class="slds-text-title--caps slds-line-height--reset">Sprint Review</p>
+                  <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate" title="this should match the Record Title">{!sprintName}</h1>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--************   ITEM COMPONENTS   *******************-->     
+        <div class="slds-grid slds-p-top--small slds-p-bottom--small slds-p-left--small slds-p-right--small">
+          <div class="slds-box slds-box--small slds-theme--shade slds-text-align--left">
+            <div class="slds-col">
+
+              <!--   Section Header   *******************-->     
+              <div class="slds-grid">
+                <div class="slds-col slds-has-flexi-truncate">
+                  <div class="slds-media slds-no-space slds-grow">
+                    <div class="slds-media__figure">
+                      <svg class="slds-icon slds-icon-custom-custom108" aria-hidden="true">
+                        <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/custom-sprite/svg/symbols.svg#custom108')}"></use>
+                      </svg>
+                    </div>
+                    <div class="slds-media__body">
+                      <p class="slds-page-header__title slds-truncate">Item Components</p>
+                      <p class="slds-text-body--small">Update the status of Components</p>
+                    </div>
+                  </div>
+                </div>
+              <div class="slds-button-group slds-p-top--small" role="group">
+                <apex:commandButton action="{!pageHandler}" value="Save" rerender="block" styleClass="slds-button slds-button--neutral" >
+                  <apex:param name="eventid" value="saveRecord" assignTo="{!callAction}" />
+                </apex:commandButton>
+                <apex:commandButton onclick="resetInlineEdit()" id="cancelButton" value="Cancel" styleClass="slds-button slds-button--neutral"/>
+              </div>
+            </div>
+ 
+            <!--   ITEM COMPONENTS - Item Picklist   *******************-->      
+            <div class="slds-picklist slds-dropdown-trigger slds-dropdown-trigger--click itemPicklist" data-aljs="picklist" >
+              <div class="slds-form-element">
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right slds-picklist__input">
+                  <input type="search" id="text-input-01" class="slds-lookup__search-input slds-input" placeholder="Select an Item" aria-owns="option-list-01" role="combobox" aria-activedescendant="" aria-expanded="false" readonly=""/>
+                  <button class="slds-button slds-input__icon slds-text-color--default" aria-expanded="false" tabindex="-1" title="settings">
+                    <svg class="slds-button__icon slds-button__icon" aria-hidden="true">
+                      <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#down')}"></use>
+                    </svg>
+                    <span class="slds-assistive-text">Expand category options</span>
+                  </button>
+                </div>
+              </div>
+              <div class="slds-dropdown slds-dropdown--left" role="listbox">
+                <ul id="option-list-01" class="slds-dropdown__list slds-dropdown--length-5" role="presentation">
+                  <apex:variable var="count" value="{!1}"   />
+                  <apex:repeat value="{!sprintItemsWrapper}" var="items" id="items">
+                    <li role="presentation">
+                      <span class="slds-lookup__item-action slds-lookup__item-action--label" role="option" tabindex="0" id="listbox-option-{!count}">
+                        <svg class="slds-icon slds-icon--selected slds-icon--x-small slds-icon-text-default slds-m-right--x-small slds-shrink-none" aria-hidden="true">
+                          <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#check')}"></use>
+                        </svg>
+                        <span class="slds-truncate">{!items.sprintItem.Item__r.Name}</span>
+                      </span>
+                    </li>
+                    <apex:variable value="{!count+1}" var="count"/>  <!--increment-->
+                  </apex:repeat>
+                </ul>
+              </div>
+            </div>
+ 
+            <!--   ITEM COMPONENTS - Table Heading   *******************-->     
+            <div class="slds-p-top--xx-small"></div>
+            <apex:outputPanel id="componentList01">
+              <table class="slds-table slds-table--bordered slds-table--resizable-cols slds-table--fixed-layout" role="grid">
+                <thead>
+                  <tr class="slds-line-height--reset">
+                    <th class="slds-is-sortable slds-is-resizable slds-text-title--caps" scope="col">
+                      <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" tabindex="0">
+                        <span class="slds-assistive-text">Sort </span>
+                        <span class="slds-truncate" title="Component">Component</span>
+                        <div class="slds-icon_container">
+                          <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-is-sortable__icon" aria-hidden="true">
+                            <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#arrowdown')}"></use>
+                          </svg>
+                        </div>
+                        <span class="slds-assistive-text" aria-live="assertive" aria-atomic="true"></span>
+                      </a>
+                      <div class="slds-resizable">
+                        <label for="cell-resize-handle-588" class="slds-assistive-text">Component column width</label>
+                        <input type="range" min="20" max="1000" class="slds-resizable__input slds-assistive-text" id="cell-resize-handle-588" tabindex="0" />
+                        <span class="slds-resizable__handle">
+                          <span class="slds-resizable__divider"></span>
+                        </span>
+                      </div>
+                    </th>
+                  
+                    <th class="slds-is-sortable slds-is-resizable slds-text-title--caps slds-is-sorted slds-is-sorted--asc" aria-sort="ascending" scope="col">
+                      <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" tabindex="0">
+                        <span class="slds-assistive-text">Sort </span>
+                        <span class="slds-truncate" title="Quantity">Quantity</span>
+                        <div class="slds-icon_container">
+                          <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-is-sortable__icon" aria-hidden="true">
+                            <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#arrowdown')}"></use>
+                          </svg>
+                        </div>
+                        <span class="slds-assistive-text" aria-live="assertive" aria-atomic="true">Sorted ascending</span>
+                      </a>
+                      <div class="slds-resizable">
+                        <label for="cell-resize-handle-589" class="slds-assistive-text">Quantity column width</label>
+                        <input type="range" min="20" max="1000" class="slds-resizable__input slds-assistive-text" id="cell-resize-handle-589" tabindex="0" />
+                        <span class="slds-resizable__handle">
+                          <span class="slds-resizable__divider"></span>
+                        </span>
+                      </div>
+                    </th>
+                    <th class="slds-is-sortable slds-is-resizable slds-text-title--caps" scope="col">
+                      <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" tabindex="0">
+                        <span class="slds-assistive-text">Sort </span>
+                        <span class="slds-truncate" title="Number Finished">Number Finished</span>
+                        <div class="slds-icon_container">
+                          <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-is-sortable__icon" aria-hidden="true">
+                            <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#arrowdown')}"></use>
+                          </svg>
+                        </div>
+                        <span class="slds-assistive-text" aria-live="assertive" aria-atomic="true"></span>
+                      </a>
+                      <div class="slds-resizable">
+                        <label for="cell-resize-handle-590" class="slds-assistive-text">Number Finished column width</label>
+                        <input type="range" min="20" max="1000" class="slds-resizable__input slds-assistive-text" id="cell-resize-handle-590" tabindex="0" />
+                        <span class="slds-resizable__handle">
+                          <span class="slds-resizable__divider"></span>
+                        </span>
+                      </div>
+                    </th>
+                    <th class="slds-is-sortable slds-is-resizable slds-text-title--caps" scope="col">
+                      <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" tabindex="0">
+                        <span class="slds-assistive-text">Sort </span>
+                        <span class="slds-truncate" title="Number Started">Number Started</span>
+                        <div class="slds-icon_container">
+                          <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-is-sortable__icon" aria-hidden="true">
+                            <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#arrowdown')}"></use>
+                          </svg>
+                        </div>
+                        <span class="slds-assistive-text" aria-live="assertive" aria-atomic="true"></span>
+                      </a>
+                      <div class="slds-resizable">
+                        <label for="cell-resize-handle-590" class="slds-assistive-text">Number Started column width</label>
+                        <input type="range" min="20" max="1000" class="slds-resizable__input slds-assistive-text" id="cell-resize-handle-590" tabindex="0" />
+                        <span class="slds-resizable__handle">
+                          <span class="slds-resizable__divider"></span>
+                        </span>
+                      </div>
+                    </th>
+                    <th class="slds-is-sortable slds-is-resizable slds-text-title--caps" scope="col">
+                      <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" tabindex="0">
+                        <span class="slds-assistive-text">Sort </span>
+                        <span class="slds-truncate" title="Stage">Stage</span>
+                        <div class="slds-icon_container">
+                          <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-is-sortable__icon" aria-hidden="true">
+                            <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#arrowdown')}"></use>
+                          </svg>
+                        </div>
+                        <span class="slds-assistive-text" aria-live="assertive" aria-atomic="true"></span>
+                      </a>
+                      <div class="slds-resizable">
+                        <label for="cell-resize-handle-590" class="slds-assistive-text">Stage column width</label>
+                        <input type="range" min="20" max="1000" class="slds-resizable__input slds-assistive-text" id="cell-resize-handle-590" tabindex="0" />
+                        <span class="slds-resizable__handle">
+                          <span class="slds-resizable__divider"></span>
+                        </span>
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                <!--   ITEM COMPONENTS - Table Data   *******************-->     
+                <tbody>
+                  <apex:repeat value="{!selectedItemComponentUseAudits}" var="componentList1" id="components1">
+                    <tr class="slds-hint-parent">
+                      <td role="gridcell">
+                        <div class="slds-truncate" title="{!componentList1.Item_Component_Use__r.Item_Component__r.Name}">{!componentList1.Item_Component_Use__r.Item_Component__r.Name}</div>
+                      </td>
+                      <td role="gridcell">
+                        <div class="slds-truncate" title="{!componentList1.Quantity__c}">{!componentList1.Quantity__c}</div>
+                      </td>
+                      <td role="gridcell">
+                        <apex:actionRegion >
+                          <apex:outputField value="{!componentList1.Number_Finished__c}">
+                            <apex:inlineEditSupport event="ondblClick" resetFunction="resetInlineEdit"/>
+                          </apex:outputField>
+                        </apex:actionRegion>
+                      </td> 
+                      <td role="gridcell">
+                        <apex:actionRegion >
+                          <apex:outputField value="{!componentList1.Number_Started__c}">
+                            <apex:inlineEditSupport event="ondblClick" resetFunction="resetInlineEdit"/>
+                          </apex:outputField>
+                        </apex:actionRegion>
+                      </td> 
+                      <td role="gridcell">
+                        <div class="slds-truncate" title="{!componentList1.Stage__c}">{!componentList1.Stage__c}</div>
+                      </td> 
+                    </tr>
+                  </apex:repeat> 
+                </tbody>
+              </table>
+            </apex:outputPanel>
+          </div>
+        </div>
+      </div>
+
+      <!--************   ITEM ACTIVITIES   *******************-->     
+      <div class="slds-grid slds-p-top--xx-small slds-p-bottom--small slds-p-left--small slds-p-right--small" >
+        <div class="slds-box slds-box--small slds-theme--shade slds-text-align--left">
+          <div class="slds-col" >
+           
+            <!--   Section Header   *******************-->     
+            <div class="slds-grid">
+              <div class="slds-col slds-has-flexi-truncate">
+                <div class="slds-media slds-no-space slds-grow">
+                  <div class="slds-media__figure">
+                    <svg class="slds-icon slds-icon-custom-custom80" aria-hidden="true">
+                      <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/custom-sprite/svg/symbols.svg#custom80')}"></use>
+                    </svg>
+                  </div>
+                  <div class="slds-media__body">
+                    <p class="slds-page-header__title slds-truncate">Item Activities</p>
+                    <p class="slds-text-body--small">Update the status of Activities</p>
+                  </div>
+                </div>
+              </div>
+            <div class="slds-button-group slds-p-top--small" role="group">
+              <apex:commandButton onclick="notStarted();return false" value="Not Started" rerender="activityBlock"  styleClass="slds-button slds-button--neutral"/>
+              <apex:commandButton onclick="started();return false" value="Started" rerender="activityBlock"  styleClass="slds-button slds-button--neutral"/>
+              <apex:commandButton onclick="finished();return false" value="Finished" rerender="activityBlock"  styleClass="slds-button slds-button--neutral"/>
+            </div>       
+          </div>
+
+          <!--   Table Heading   *******************-->     
+          <div class="slds-p-top--xx-small"></div>
+        <apex:outputPanel id="activityBlock">
+            <table class="slds-table slds-table--bordered slds-table--resizable-cols slds-table--fixed-layout" role="grid">
+              <thead>
+                <tr class="slds-line-height--reset">
+                  <th scope="col" style="width:3.25rem;" class="slds-text-align--right">
+                    <div class="slds-th__action slds-th__action--form">
+                      <span class="slds-checkbox">
+                        <input type="checkbox" name="options" id="checkbox-135"  class="allActivities"/>
+                        <label class="slds-checkbox__label" for="checkbox-135">
+                          <span class="slds-checkbox--faux"></span>
+                          <span class="slds-form-element__label slds-assistive-text">Select All</span>
+                        </label>
+                      </span>
+                    </div>
+                  </th>
+                  <th class="slds-is-sortable slds-is-resizable slds-text-title--caps" scope="col">
+                    <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" tabindex="0">
+                      <span class="slds-assistive-text">Sort </span>
+                      <span class="slds-truncate" title="Name">Item</span>
+                      <div class="slds-icon_container">
+                        <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-is-sortable__icon" aria-hidden="true">
+                          <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#arrowdown')}"></use>
+                        </svg>
+                      </div>
+                      <span class="slds-assistive-text" aria-live="assertive" aria-atomic="true"></span>
+                    </a>
+                    <div class="slds-resizable">
+                      <label for="cell-resize-handle-588" class="slds-assistive-text">Item column width</label>
+                      <input type="range" min="20" max="1000" class="slds-resizable__input slds-assistive-text" id="cell-resize-handle-588" tabindex="0" />
+                      <span class="slds-resizable__handle">
+                        <span class="slds-resizable__divider"></span>
+                      </span>
+                    </div>
+                  </th>
+                  <th class="slds-is-sortable slds-is-resizable slds-text-title--caps slds-is-sorted slds-is-sorted--asc" aria-sort="ascending" scope="col">
+                    <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" tabindex="0">
+                      <span class="slds-assistive-text">Sort </span>
+                      <span class="slds-truncate" title="Stage">Stage</span>
+                      <div class="slds-icon_container">
+                        <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-is-sortable__icon" aria-hidden="true">
+                          <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#arrowdown')}"></use>
+                        </svg>
+                      </div>
+                      <span class="slds-assistive-text" aria-live="assertive" aria-atomic="true">Sorted ascending</span>
+                    </a>
+                    <div class="slds-resizable">
+                      <label for="cell-resize-handle-589" class="slds-assistive-text">Stage column width</label>
+                      <input type="range" min="20" max="1000" class="slds-resizable__input slds-assistive-text" id="cell-resize-handle-589" tabindex="0" />
+                      <span class="slds-resizable__handle">
+                        <span class="slds-resizable__divider"></span>
+                      </span>
+                    </div>
+                  </th>
+                  <th class="slds-is-sortable slds-is-resizable slds-text-title--caps" scope="col">
+                    <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" tabindex="0">
+                      <span class="slds-assistive-text">Sort </span>
+                      <span class="slds-truncate" title="Status">Status</span>
+                      <div class="slds-icon_container">
+                        <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-is-sortable__icon" aria-hidden="true">
+                          <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#arrowdown')}"></use>
+                        </svg>
+                      </div>
+                      <span class="slds-assistive-text" aria-live="assertive" aria-atomic="true"></span>
+                    </a>
+                    <div class="slds-resizable">
+                      <label for="cell-resize-handle-590" class="slds-assistive-text">Status column width</label>
+                      <input type="range" min="20" max="1000" class="slds-resizable__input slds-assistive-text" id="cell-resize-handle-590" tabindex="0" />
+                      <span class="slds-resizable__handle">
+                        <span class="slds-resizable__divider"></span>
+                      </span>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+
+              <!--   Table Data   *******************-->     
+              <tbody>
+                <apex:repeat value="{!selectedActivityWrap}" var="activity" id="activities">
+                  <tr class="slds-hint-parent">
+                    <td role="gridcell" class="slds-text-align--right" style="width:3.25rem;">
+                      <span class="slds-checkbox">
+                        <apex:inputHidden value="{!activity.selected}" id="activityHiddenVar" />
+                        <input type="checkbox" name="options" id="{!activity.activity.Id}"  onchange="document.getElementById('{!$Component.activityHiddenVar}').value = this.checked;" class="rowActivity"/>
+                        <label class="slds-checkbox__label" for="{!activity.activity.Id}">
+                          <span class="slds-checkbox--faux"></span>
+                          <span class="slds-form-element__label slds-assistive-text">Select item 1</span>
+                        </label>
+                      </span>
+                    </td>
+                    <th scope="row">
+                      <div class="slds-truncate" title="{!activity.activity.Item__c}">{!activity.activity.Description__c}</div>
+                    </th>
+                    <td role="gridcell">
+                      <div class="slds-truncate" title="{!activity.activity.Stage__c}">{!activity.activity.Stage__c}</div>
+                    </td>
+                    <td role="gridcell">
+                      <div class="slds-truncate" title="{!activity.activity.Status__c}">{!activity.activity.Status__c}</div>
+                    </td>
+                  </tr>
+                </apex:repeat> 
+              </tbody>
+            </table>
+        </apex:outputPanel>
+          </div>
+        </div>
+      </div>
+
+      <!--************   ITEMS   *******************-->     
+      <div class="slds-grid slds-p-top--xxx-small slds-p-bottom--small slds-p-left--small slds-p-right--small">
+ 
+        <!--   Section Header   *******************-->     
+        <div class="slds-box slds-box--small slds-theme--shade slds-text-align--left">
+          <div class="slds-col">
+            <div class="slds-grid">
+              <div class="slds-col slds-has-flexi-truncate">
+                <div class="slds-media slds-no-space slds-grow">
+                  <div class="slds-media__figure">
+                    <svg class="slds-icon slds-icon-standard-report" aria-hidden="true">
+                      <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/standard-sprite/svg/symbols.svg#report')}"></use>
+                    </svg>
+                  </div>
+                  <div class="slds-media__body">
+                    <p class="slds-page-header__title slds-truncate">Items</p>
+                    <p class="slds-text-body--small">Update the sprint status of items and components for selected Items to finished</p>
+                  </div>
+                </div>
+              </div>
+                <div class="slds-button-group slds-p-top--small" role="group">
+                  <apex:commandButton onclick="itemNotStarted();return false" value="Not Started" rerender="block"  styleClass="slds-button slds-button--neutral"/>
+                  <apex:commandButton onclick="itemStarted();return false" value="Started" rerender="block"  styleClass="slds-button slds-button--neutral"/>
+                  <apex:commandButton onclick="itemFinished();return false" value="Finished" rerender="block"  styleClass="slds-button slds-button--neutral"/>
+                  <apex:commandButton onclick="itemRemoved();return false" value="Remove" rerender="block"  styleClass="slds-button slds-button--neutral"/>
+               </div>
+            </div>
+
+            <!--   Table Headings   *******************-->     
+            <div class="slds-p-top--xx-small"></div>
+            <apex:outputPanel id="itemList01">
+            <table class="slds-table slds-table--bordered slds-table--resizable-cols slds-table--fixed-layout" role="grid">
+              <thead>
+                <tr class="slds-line-height--reset">
+                  <th scope="col" style="width:3.25rem;" class="slds-text-align--right">
+                    <div class="slds-th__action slds-th__action--form">
+                      <span class="slds-checkbox">
+                        <input type="checkbox" name="options1" id="checkbox-item" class="allItems"/>
+                        <label class="slds-checkbox__label" for="checkbox-item">
+                          <span class="slds-checkbox--faux"></span>
+                          <span class="slds-form-element__label slds-assistive-text">Select All</span>
+                        </label>
+                      </span>
+                    </div>
+                  </th>
+                  <th class="slds-is-sortable slds-is-resizable slds-text-title--caps" scope="col">
+                    <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" tabindex="0">
+                      <span class="slds-assistive-text">Sort </span>
+                      <span class="slds-truncate" title="Name">Item</span>
+                      <div class="slds-icon_container">
+                        <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-is-sortable__icon" aria-hidden="true">
+                          <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#arrowdown')}"></use>
+                        </svg>
+                      </div>
+                      <span class="slds-assistive-text" aria-live="assertive" aria-atomic="true"></span>
+                    </a>
+                    <div class="slds-resizable">
+                      <label for="cell-resize-handle-588" class="slds-assistive-text">Item column width</label>
+                      <input type="range" min="20" max="1000" class="slds-resizable__input slds-assistive-text" id="cell-resize-handle-588" tabindex="0" />
+                      <span class="slds-resizable__handle">
+                        <span class="slds-resizable__divider"></span>
+                      </span>
+                    </div>
+                  </th>
+                  <th class="slds-is-sortable slds-is-resizable slds-text-title--caps" scope="col">
+                    <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" tabindex="0">
+                      <span class="slds-assistive-text">Sort </span>
+                      <span class="slds-truncate" title="Stage">Stage</span>
+                      <div class="slds-icon_container">
+                        <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-is-sortable__icon" aria-hidden="true">
+                          <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#arrowdown')}"></use>
+                        </svg>
+                      </div>
+                      <span class="slds-assistive-text" aria-live="assertive" aria-atomic="true"></span>
+                    </a>
+                    <div class="slds-resizable">
+                      <label for="cell-resize-handle-590" class="slds-assistive-text">Stage column width</label>
+                      <input type="range" min="20" max="1000" class="slds-resizable__input slds-assistive-text" id="cell-resize-handle-590" tabindex="0" />
+                      <span class="slds-resizable__handle">
+                        <span class="slds-resizable__divider"></span>
+                      </span>
+                    </div>
+                  </th>
+                  <th class="slds-is-sortable slds-is-resizable slds-text-title--caps" scope="col">
+                    <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" tabindex="0">
+                      <span class="slds-assistive-text">Sort </span>
+                      <span class="slds-truncate" title="Status">Status</span>
+                      <div class="slds-icon_container">
+                        <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-is-sortable__icon" aria-hidden="true">
+                          <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#arrowdown')}"></use>
+                        </svg>
+                      </div>
+                      <span class="slds-assistive-text" aria-live="assertive" aria-atomic="true"></span>
+                    </a>
+                    <div class="slds-resizable">
+                      <label for="cell-resize-handle-590" class="slds-assistive-text">Status column width</label>
+                      <input type="range" min="20" max="1000" class="slds-resizable__input slds-assistive-text" id="cell-resize-handle-590" tabindex="0" />
+                      <span class="slds-resizable__handle">
+                        <span class="slds-resizable__divider"></span>
+                      </span>
+                    </div>
+                  </th>
+                  <th class="slds-is-sortable slds-is-resizable slds-text-title--caps" scope="col">
+                    <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" tabindex="0">
+                      <span class="slds-assistive-text">Sort </span>
+                      <span class="slds-truncate" title="Variation">Variation</span>
+                      <div class="slds-icon_container">
+                        <svg class="slds-icon slds-icon--x-small slds-icon-text-default slds-is-sortable__icon" aria-hidden="true">
+                          <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#arrowdown')}"></use>
+                        </svg>
+                      </div>
+                      <span class="slds-assistive-text" aria-live="assertive" aria-atomic="true"></span>
+                    </a>
+                    <div class="slds-resizable">
+                      <label for="cell-resize-handle-590" class="slds-assistive-text">Variation column width</label>
+                      <input type="range" min="20" max="1000" class="slds-resizable__input slds-assistive-text" id="cell-resize-handle-590" tabindex="0" />
+                      <span class="slds-resizable__handle">
+                        <span class="slds-resizable__divider"></span>
+                      </span>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+
+              <!--   Table Data   *******************-->     
+              <tbody>
+                <apex:repeat value="{!sprintItemsWrapper}" var="sprints" id="theRepeat">
+                  <tr class="slds-hint-parent">
+                    <td role="gridcell" class="slds-text-align--right" style="width:3.25rem;">
+                      <span class="slds-checkbox">
+                        <apex:inputHidden value="{!sprints.selected}" id="myHiddenVar" />
+                        <input type="checkbox" name="options" id="{!sprints.sprintItem.Id}" onchange="document.getElementById('{!$Component.myHiddenVar}').value = this.checked;" class="rowItem"/>
+                        <label class="slds-checkbox__label" for="{!sprints.sprintItem.Id}">
+                          <span class="slds-checkbox--faux"></span>
+                          <span class="slds-form-element__label slds-assistive-text">Select item 1</span>
+                        </label>
+                      </span>
+                    </td>
+                    <th scope="row">
+                      <div class="slds-truncate" title="{!sprints.sprintItem.Item__r.Name}">{!sprints.sprintItem.Item__r.Name}</div>
+                    </th>
+                    <td role="gridcell">
+                      <div class="slds-truncate" title="{!sprints.sprintItem.Sprint_Item_Stage__c}">{!sprints.sprintItem.Sprint_Item_Stage__c}</div>
+                    </td>
+                    <td role="gridcell">
+                      <div class="slds-truncate" style="{!'background-color:' + (IF(sprints.sprintItem.Sprint_Item_Status_Complete__c == 'Started', '#FFC200', IF(sprints.sprintItem.Sprint_Item_Status_Complete__c == 'Finished', '#00ff00', '#ff0000'))) }" title="{!sprints.sprintItem.Sprint_Item_Status_Complete__c}">{!sprints.sprintItem.Sprint_Item_Status_Complete__c}</div>
+                    </td>                    
+                    <td role="gridcell">
+                      <apex:variable var="renderTrue" value="dummy" rendered="{!sprints.sprintItem.Item__r.Variation__c}">
+                        <span class="slds-icon_container slds-icon-action-approval" title="variation">
+                          <svg class="slds-icon slds-icon--xx-small" aria-hidden="true" >
+                            <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/action-sprite/svg/symbols.svg#approval')}"> </use>
+                          </svg>
+                        </span>
+                      </apex:variable>
+                      <apex:variable var="renderFalse" value="dummy" rendered="{!!sprints.sprintItem.Item__r.Variation__c}">
+                        <span class="slds-icon_container  slds-icon-action-close" title="reject">
+                          <svg class="slds-icon slds-icon--xx-small" aria-hidden="true" >
+                            <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/action-sprite/svg/symbols.svg#reject')}"> </use>
+                          </svg>
+                        </span>
+                      </apex:variable>
+                    </td>
+                  </tr>
+                </apex:repeat> 
+              </tbody>
+            </table>
+            </apex:outputPanel>
+          </div>
+        </div>
+      </div>										
+    </div>
+
+    <apex:actionFunction name="refreshItemComponents"  action="{!refreshselectedItemComponentUseAudits}" rerender="componentList01"  oncomplete="topgy()"> 
+      <apex:param name="eventb" value="" assignTo="{!item}" />
+    </apex:actionFunction>
+
+    <apex:actionFunction name="removeItem"  action="{!pageHandler}" rerender="block"  oncomplete="topgy()"> 
+      <apex:param name="eventb" value="removeSprintItems" assignTo="{!callAction}" />
+    </apex:actionFunction>
+ 
+    <apex:actionFunction name="updateItemNotStarted"  action="{!pageHandler}" rerender="block"  oncomplete="topgy()"> 
+      <apex:param name="eventb" value="updateSelectedItemsNotStarted" assignTo="{!callAction}" />
+    </apex:actionFunction>
+    
+    <apex:actionFunction name="updateItemFinished"  action="{!pageHandler}" rerender="block"  oncomplete="topgy()"> 
+      <apex:param name="eventb" value="updateSelectedItemsFinished" assignTo="{!callAction}" />
+    </apex:actionFunction>
+    
+    <apex:actionFunction name="updateItemStarted"  action="{!pageHandler}" rerender="block"  oncomplete="topgy()"> 
+      <apex:param name="eventb" value="updateSelectedItemsStarted" assignTo="{!callAction}" />
+    </apex:actionFunction>
+    
+    <apex:actionFunction name="updateActivityNotStarted"  action="{!pageHandlerActivity}" rerender="activityBlock"  oncomplete="topgy()"> 
+      <apex:param name="eventa" value="Not Started" assignTo="{!callActionActivity}" />
+    </apex:actionFunction>
+    
+    <apex:actionFunction name="updateActivityStarted"  action="{!pageHandlerActivity}" rerender="activityBlock"  oncomplete="topgy()"> 
+      <apex:param name="eventa" value="Started" assignTo="{!callActionActivity}" />
+    </apex:actionFunction>
+
+    <apex:actionFunction name="updateActivityFinished"  action="{!pageHandlerActivity}" rerender="activityBlock"  oncomplete="topgy()"> 
+      <apex:param name="eventa" value="Finished" assignTo="{!callActionActivity}" />
+    </apex:actionFunction>
+  </apex:form>
+  <script>
+    var activityPicked = 0;
+    var itemPicked = 0;
+
+    function notStarted(){
+      if(activityPicked==0)
+        alert('Select an Activity from the List');
+      else{
+        updateActivityNotStarted();
+      }
+    }
+
+    function started(){
+      if(activityPicked==0)
+        alert('Select an Activity from the List');
+      else{
+        updateActivityStarted();
+      }
+    }
+
+    function finished(){
+      if(activityPicked==0)
+        alert('Select an Activity from the List');
+      else{
+        // alert('updateActivityFinished');
+        activityPicked = 0;
+        updateActivityFinished();
+      }
+    }
+
+    function itemNotStarted(){ 
+      if(itemPicked==0)
+        alert('Select an Item from the List');
+      else{
+        updateItemNotStarted();
+      }
+    }
+      
+    function itemFinished(){
+      if(itemPicked==0)
+        alert('Select an Item from the List');
+      else{
+        updateItemFinished();
+      }       
+    }
+
+    function itemStarted(){
+      if(itemPicked==0)
+        alert('Select an Item from the List');
+      else{
+        updateItemStarted();
+      }       
+    }
+
+    function itemRemoved(){
+      if(itemPicked==0)
+        alert('Select an Item from the List');
+      else{
+        removeItem();
+      }       
+    }
+
+    j$ = jQuery.noConflict();
+    j$(document).ready(function() {
+
+     j$(".allItems").click(function() {
+        var checkedRow = j$(this);
+        var status = j$(this).is(":checked");
+        jQuery(".rowItem").each(
+          function() {
+            if (status==false){
+              //  alert('Called by = unchecking');
+              this.checked=false;
+              itemPicked++;
+              checkedRow.checked=false;
+              j$(this).trigger("change");
+            } else {
+              //  alert('Called by = checking');
+              this.checked=true;
+              itemPicked++;
+              checkedRow.checked=true;
+              j$(this).trigger("change");
+            }
+          });
+      });
+
+     j$(".rowItem").click(function() {
+       //  alert('Called by = rowItem');
+       var checkedRow = this;
+       var status = j$(this).is(":checked");
+       jQuery(".allItems").each(
+         function() {
+           if (status==false) {
+             //  alert('Called by = unchecking');
+             this.checked=false;
+             itemPicked--;
+             checkedRow.checked=false;
+           } else {
+             itemPicked++;
+           }
+         });
+       });
+
+       j$(".allActivities").click(function() {
+         var checkedRow = j$(this);
+         var status = j$(this).is(":checked");
+         jQuery(".rowActivity").each(
+           function() {
+             if (status==false){
+               // alert('Called by = unchecking');
+               this.checked=false;
+               activityPicked++;
+               checkedRow.checked=false;
+               j$(this).trigger("change");
+             } else {
+               // alert('Called by = checking');
+               this.checked=true;
+               activityPicked++;
+               checkedRow.checked=true;
+               j$(this).trigger("change");
+             }
+           });
+        });
+
+       j$(".rowActivity").click(function() {
+         //  alert('Called by = rowActivity');
+         var checkedRow = this;
+         var status = j$(this).is(":checked");
+         jQuery(".allActivities").each(
+           function() {
+             if (status==false) {
+               //  alert('Called by = unchecking');
+               this.checked=false;
+               activityPicked--;
+               checkedRow.checked=false;
+             } else {
+               activityPicked++;
+             }
+           });
+         });
+
+
+    });
+
+  </script>  
+  
+  <script>
+        j$(document).ready(function() {
+          j$('[data-aljs="picklist"]').picklist({
+                onChange: function(obj) {
+                  refreshItemComponents(j$('[data-aljs="picklist"]').picklist('getValue').value);
+                }
+          });
+        });
+ 
+
+  </script>
+  
+        <script>
+        j$(document).ready(function () {
+          j$('a[href="#"]').click(function (e) {
+             e.preventDefault();
+             return false;
+          });
+          j$(document).keyup(function(e) {
+             e.stopPropagation();
+             e.preventDefault();
+             return false;
+          });
+        });
+      </script>
+  
+  
+</html>
+         
+</apex:page>

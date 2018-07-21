@@ -1,0 +1,12 @@
+<aura:component controller="am_SprintReviewAURA">
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+  <aura:registerEvent name="am_evtSetProject" type="c:am_evtSetProject"/>
+
+  <!-- / SELECT INPUT -->
+  <div>
+    <ui:inputSelect multiple="false" label="Select a Project" aura:id="selectProject" 
+      class="slds-select" labelClass="slds-form-element__label" change="{!c.setProject}" >
+        <ui:inputSelectOption label="Projects are loading..." value="0"/>
+    </ui:inputSelect>
+  </div>
+</aura:component>

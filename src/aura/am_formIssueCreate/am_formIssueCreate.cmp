@@ -1,0 +1,77 @@
+<aura:component controller="am_SprintReviewAURA">
+  <aura:attribute name="item" type="String"/>
+  <aura:attribute name="project" type="String"/> 
+  <aura:attribute name="showIssueInput" type="Boolean" default="false"/>
+  <aura:attribute name="IssueToRelateTo" type="String[]"/>
+  <aura:attribute name="issue" type="Issue__c" default="{'sobjectType': 'Issue__c',
+                                                         'Description__c': '', 'Project__c': '' }"/>
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+  <aura:handler event="c:am_evtSetProject" action="{!c.setProject}"/>
+  <aura:handler event="c:am_evtSetItem" action="{!c.setItem}"/>
+  <aura:handler event="c:am_evtSetIssue" action="{!c.setIssueToRelateTo}"/>
+  <aura:registerEvent name="am_evtGetIssues" type="c:am_evtGetIssues"/>  
+
+  <div class="slds-page-header">
+    <div class="slds-media">
+      <div class="slds-media__figure">
+        <span class="slds-icon_container slds-icon-standard-opportunity" title="Description of icon when needed">
+          <lightning:icon iconName="custom:custom55" size="large" alternativeText="Review issue"/>
+        </span>
+      </div>
+      <div class="slds-media__body">
+        <h1 class="slds-page-header__title slds-truncate slds-align-middle" title="Create issue">Create issue</h1>
+        <p class="slds-text-body_small slds-line-height_reset">Create a new issue for the selected item</p>
+      </div>
+    </div>
+  </div>
+  
+  <div>
+    <lightning:layout >
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+        <div>
+           <c:am_plistProjects />
+        </div>
+      </lightning:layoutItem>  
+
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+        <c:am_plistItems allowableSource="Project" />
+      </lightning:layoutItem>  
+      
+      <aura:if isTrue="{!v.showIssueInput == true}">
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small ">
+        <div>
+          <lightning:button variant="brand" label="Save Issue" onclick="{! c.saveIssueData }" />
+        </div>
+      </lightning:layoutItem>  
+  </aura:if>
+      
+     </lightning:layout>
+  </div>
+
+  <aura:if isTrue="{!v.showIssueInput == true}">
+    <form class="slds-form--stacked">
+      <div class="slds-form-element slds-m-left--x-small slds-p-top--small">
+        <label class="slds-form-element__label" for="issueTextTitle">Issue</label>
+        <div class="slds-form-element__control">
+          <ui:inputText aura:id="issueTextTitle" value="{!v.issue.Title__c}" placeholder="Enter a description of the issue" required="true" class="slds-input" />
+        </div>
+      </div>
+      
+ 
+      <div class="slds-form-element slds-m-left--x-small slds-p-top--small">
+        <div aura:id="existingIssuesHere"/>
+      </div>
+    </form>
+
+  <div>
+    <lightning:layout verticalAlign="center">
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small ">
+        <div>
+          <lightning:button variant="brand" label="Save Issue" onclick="{! c.saveIssueData }" />
+        </div>
+      </lightning:layoutItem>  
+    </lightning:layout> 
+  </div>
+  </aura:if>
+
+</aura:component>

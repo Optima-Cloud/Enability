@@ -1,0 +1,23 @@
+<aura:component >
+  <aura:attribute name="story" type="Object" required="true"/>
+
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+
+  <!-- Custom Events -->
+  <aura:registerEvent name="am_evtEpicChange" type="c:am_evtEpicChange"/>
+    
+    <div aura:id="story" class="card draggable" draggable="true" ondragstart="{!c.onDragStart}" ondrop="{!c.onDrop}" ondragover="{!c.allowDrop}"> 
+<!--   <div aura:id="story" ondrop="{!c.onDrop}" ondragover="{!c.allowDrop}">  -->
+    <div class="card-content">
+      {!v.story.title}
+      <lightning:badge label="{!v.story.id}"/>
+      <aura:set attribute="actions"> <lightning:button label="Edit"/> </aura:set>
+      <p class="slds-p-horizontal--small"> {!v.story.description} </p>
+    </div>
+    <div class="panel-block column">
+      <aura:iteration items="{!v.story.items}" var="item">
+        <c:am_subAgileMapItem item="{!item}"/> 
+      </aura:iteration>
+    </div>
+  </div>
+</aura:component>

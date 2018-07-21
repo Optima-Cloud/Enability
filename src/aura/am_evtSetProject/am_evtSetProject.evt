@@ -1,0 +1,4 @@
+<!--c:am_evtSetProject-->
+<aura:event type="APPLICATION">
+    <aura:attribute name="projectSelected" type="String"/>
+</aura:event>

@@ -1,0 +1,21 @@
+<apex:page standardController="Sprint_Items__c" extensions="am_SprintItemExt" recordSetVar="selectedSprintItems">
+  <apex:form > 
+       <apex:pageBlock title="Remove items from Sprint" id="block">
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!pageHandler}" value="Confirm" rerender="block">
+                  <apex:param name="eventid" value="removeSprintItems" assignTo="{!callAction}" />
+                </apex:commandButton>
+                <apex:commandButton action="{!Cancel}" value="Cancel"/>
+            </apex:pageBlockButtons>
+
+           <apex:pageBlockTable value="{!selectedSprintItems}" var="Item">
+                <apex:column value="{!Item.Name}"/>
+                <apex:column value="{!Item.Sprint__c}" headerValue="Current Sprint"/>
+                <apex:column value="{!Item.Item__c}"/>
+                <apex:column value="{!Item.Level__c}"/>
+                <apex:column value="{!Item.Wing__c}"/>
+                <apex:column value="{!Item.Item_Status__c}"/>
+           </apex:pageBlockTable> 
+       </apex:pageBlock>
+    </apex:form>    
+</apex:page>

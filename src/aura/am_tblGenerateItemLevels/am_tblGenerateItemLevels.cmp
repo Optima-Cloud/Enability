@@ -1,0 +1,32 @@
+<aura:component controller="am_formGenerateItemsAURA">
+  <aura:attribute name="mapBacklog" type="map"/>
+  <aura:attribute name="mapItems" type="Map"/>
+  <aura:attribute name="key" type="integer"/>
+  <aura:attribute name="item" type="string"/>
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+  <aura:registerEvent name="am_evtSetBacklogElement" type="c:am_evtSetBacklogElement"/>
+    
+  <!-- / BACKLOG TABLE -->
+  <table class="slds-table slds-table_cell-buffer slds-table_striped ">
+    <tbody>
+      <tr> 
+        <td class="slds-cell-wrap" >
+        <ui:outputText value="{!v.key}" />
+        </td>
+        <td class="slds-cell-wrap" >
+        <ui:outputText value="{!v.mapBacklog[5]}" />
+        </td>
+        <td class="slds-cell-wrap" >
+        <ui:outputText value="{!v.item}" />
+        </td>
+        <td class="slds-cell-wrap" >
+          <lightning:input label="Type" name="Type" variant="label-hidden"/>
+        </td>           
+        <td class="slds-cell-wrap">
+          <lightning:input label="Qty" name="Qty" variant="label-hidden"/>
+        </td>         
+      </tr>
+    </tbody> 
+  </table>
+  <!-- END BACKLOG TABLE -->
+ </aura:component>

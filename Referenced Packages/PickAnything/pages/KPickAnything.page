@@ -1,0 +1,220 @@
+<apex:page controller="PEN.KPickAnythingCon" sidebar="false" tabstyle="PickAnything_Setup__tab">
+<apex:stylesheet value="/sCSS/21.0/sprites/1297816277000/Theme3/default/gc/versioning.css" />   
+<apex:stylesheet value="/sCSS/21.0/sprites/1297816277000/Theme3/default/gc/extended.css" />
+
+  <script type="text/javascript">
+      
+      function noenter(ev)  {
+        if (window.event && window.event.keyCode == 13 || ev.which == 13) {
+            doSearchAF();
+            return false;
+         } else {
+              return true;
+         }   
+     }
+  </script>   
+      
+    <apex:sectionHeader title="PickAnything" subtitle="{!gConfig['Name']}"/>
+    
+          <apex:outputpanel >
+        <apex:actionstatus id="pickstatus">
+            <apex:facet name="start">
+                <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb;
+                       height: 100%;opacity:0.65;width:100%;"> 
+                    <div class="waitingHolder" style="top: 74.2px; width: 91px;">
+                        <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                        <span class="waitingDescription">Please Wait...</span>
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionstatus> 
+    </apex:outputpanel> 
+  
+    
+        <!-- BEGIN FORM --> 
+    <apex:form >  
+
+    <apex:pageblock >
+        <apex:pageMessages ></apex:pageMessages>
+        <apex:pageBlockButtons > 
+            <apex:commandbutton value="Quick Save" action="{!doQuickSave}" status="pickstatus"  rerender="panelWithVar"></apex:commandbutton>
+            <apex:commandbutton value="Save" action="{!doSave}" status="pickstatus"></apex:commandbutton>            
+            <apex:commandbutton value="Cancel" action="{!doCancel}"  immediate="true"></apex:commandbutton>
+        </apex:pageBlockButtons>
+        
+        <apex:outputPanel rendered="{!IF(gParentObj != null && gParentObj != null, true, false)}">
+        
+
+            
+            <!-- BEGIN OPPORTUNITY INFORMATION -->
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSection columns="2">
+                        <apex:repeat value="{!mParentFields}" var="tfieldName"> 
+                            
+	                        <apex:outputText rendered="{!IF(CONTAINS(tfieldName,'.'),true,false)}" value="{!gParentObj[tfieldName]}"/>	                                         
+	                        <apex:outputField rendered="{!IF(!CONTAINS(tfieldName,'.'),true,false)}" value="{!gParentObj[tfieldName]}"/>
+	                                		                                                                          
+                        </apex:repeat>         
+              
+                </apex:pageBlockSection>
+                <apex:pageBlockSection rendered="false" title="Search" columns="3">
+                
+                             
+                </apex:pageBlockSection>
+                <!-- <apex:commandButton value="Search" action="{!doSearch}"/> -->
+            </apex:pageBlockSection>
+            <!-- END OPPORTUNITY INFORMATION --> 
+              
+            <!-- BEGIN TOP GRIDs -->
+            <apex:pageBlockSection columns="2">
+                
+                <!-- BEGIN SELECT GRID -->      
+                <apex:pageBlockSection title="Select Grid" columns="1">  
+                  
+                    <apex:outputPanel >
+                         <apex:pageBlockSection columns="3"   > 
+                        <apex:repeat value="{!gSOSearchObj.lsProductSearchFields}" var="fvar">
+                            <!-- TEXT INPUT -->
+                            <apex:inputText label="{!fvar.ppFieldLabel}" value="{!fvar.ppFieldValue}" rendered="{!IF((fvar.ppFieldType=='Text'||fvar.ppFieldType=='Id') && fvar.ppFieldRender==true,true,false)}"  onkeypress="return noenter(event);" style="border=1;"></apex:inputText>
+                            <!-- PICKLIST INPUT -->
+                             
+                            <apex:selectList label="{!fvar.ppFieldLabel}"  value="{!fvar.ppFieldValue}" size="1" rendered="{!IF(fvar.ppFieldType=='PickList'&& fvar.ppFieldRender==true,true,false)}"  onkeypress="return noenter(event);" >
+                                <apex:selectOptions value="{!fvar.ppSelectOptions}"/>
+                            </apex:selectList> 
+                            
+                        </apex:repeat>
+                        </apex:pageBlockSection>
+                        
+                        <apex:outputPanel >
+                            <apex:commandButton value="Search" action="{!doSearch}" status="pickstatus" ></apex:commandButton>
+                              <apex:actionFunction name="doSearchAF" action="{!doSearch}" />                               
+                            <apex:commandButton title="Clear Search" value="Clear Search" action="{!doClearSearch}" ></apex:commandButton>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+
+                    <!-- START Function for firing checkbox -->
+                    <apex:actionFunction id="setavailableCheck" action="{!doCheckAllAvailable}" name="setavailableCheck" status="pickstatus">
+                         <apex:param name="firstParam" assignTo="{!gavailableCheckBox}" value="" />
+                     </apex:actionFunction>
+                     
+                    <apex:actionFunction id="setEditCheck" action="{!doCheckAllEdit}" name="setEditCheck"  status="pickstatus"  >
+                         <apex:param name="secondParam" assignTo="{!geditCheckBox}" value="" />
+                     </apex:actionFunction>
+                     
+                     
+                    <!-- END Function for firing checkbox -->
+                                            
+                    <apex:pageBlockTable value="{!glsAvailableObject}" var="availObject">
+                        <!-- Add Remove checkbox column -->
+                        <apex:facet name="footer">
+                            
+                            <div style="text-align:right" >
+                                Records: {!IF(tStdCon.ResultSize==5000,'(Only the first 5000 records shown)',tStdCon.ResultSize)}   
+                            </div>
+                        
+                        </apex:facet>
+                        <apex:column > 
+                            <apex:facet name="header">
+                                <apex:outputpanel > 
+                                    <apex:inputCheckBox onclick="setavailableCheck()"  value="{!gavailableCheckBox}"/>
+        
+                                    
+                                    <apex:commandButton value="Add" action="{!doAddProd}" status="pickstatus" ></apex:commandButton> 
+                                   
+                                    <!-- 
+                                        <apex:commandButton value="Select All" action="{!doSelectAllAvailable}"  status="pickstatus"></apex:commandButton><br/>
+                                        <apex:commandButton value="DeSelect All" action="{!doDeSelectAllAvailable}"  status="pickstatus"></apex:commandButton>
+                                     -->
+                                    
+                                </apex:outputpanel> 
+                           
+                            </apex:facet>
+                            
+                            
+                            <apex:inputCheckbox value="{!availObject['iPicked']}"/> 
+                        </apex:column> 
+                                
+
+                        <!-- Select grid columns, this is defind by the fieldsets on Product2 Object -->
+                        <apex:repeat value="{!mChildFields}" var="tfieldName">
+                            <apex:column value="{!availObject['iObj'][tfieldName]}"/>                            
+                        </apex:repeat>                  
+                    </apex:pageBlockTable>
+                    
+                    
+                    <!--  Pagination controls  -->
+
+                            <apex:panelgrid style="display: inline" columns="5">
+                                
+                                <apex:commandLink action="{!firstPage}" status="pickstatus">First</apex:commandlink>
+                                <apex:commandLink action="{!previousPage}" rendered="{!hasPrevious}" status="pickstatus">Previous</apex:commandlink>
+	                            <div style="float:right;">(Page {!pageNumber} of {!IF(resultSize == 0, 1, CEILING(resultSize/PageSize))})</div>
+                                <apex:commandLink action="{!nextPage}" rendered="{!hasNext}" status="pickstatus">Next</apex:commandlink>
+                                <apex:commandLink action="{!lastPage}" status="pickstatus">Last</apex:commandlink>
+                                    
+                            </apex:panelgrid>
+
+                </apex:pageBlockSection> 
+                <!-- END SELECT GRID -->
+                 
+                <!-- BEGIN EDIT GRID -->
+                <apex:pageBlockSection title="Edit Grid" columns="1">
+                    
+                    <apex:outputpanel >
+                        <apex:actionstatus id="status">
+                            <apex:facet name="start">
+                                <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb;
+                                       height: 100%;opacity:0.65;width:100%;"> 
+                                    <div class="waitingHolder" style="top: 74.2px; width: 91px;">
+                                       
+                                        <span class="waitingDescription">Loading...</span>
+                                    </div>
+                                </div>
+                            </apex:facet>
+                        </apex:actionstatus>
+                    </apex:outputpanel>
+                    
+                    <apex:outputPanel id="panelWithVar">
+                    
+                        <apex:outputPanel id="searchPanel">
+                        </apex:outputPanel>
+                        
+                        <apex:pageBlockTable value="{!glsEditObject}" var="gSelectObject">
+                             
+                            <!-- Add/Remove checkbox column -->
+                            <apex:column rendered="{!NOT(gSelectObject['iSoftDelete'])}"> 
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:inputCheckBox onclick="setEditCheck()"  value="{!geditCheckBox}"/><apex:commandButton value="Remove" action="{!doRemoveSelectProd}" status="pickstatus" ></apex:commandButton>                                                                    
+                                    </apex:outputPanel>
+                                </apex:facet>
+                                <apex:inputCheckbox value="{!gSelectObject['iPicked']}"/> 
+                            </apex:column> 
+                                                        
+                            <!-- Select grid columns, this is defind by the fieldsets on Junction Object -->                        
+                            <apex:repeat value="{!mJunctionFields}" var="tfieldName" > 
+                                <apex:column rendered="{!NOT(gSelectObject['iSoftDelete'])}">
+                                    <apex:facet name="header">{!tfieldName.label}</apex:facet>
+    									<!-- START Inputfields -->		
+                                        <apex:outputText rendered="{!IF(CONTAINS(tfieldName,'.'),true,false)}" value="{!gSelectObject['iObj'][tfieldName]}"/>
+
+                                		<apex:inputField rendered="{!IF(!CONTAINS(tfieldName,'.'),true,false)}" required="{!tfieldName.Required}" value="{!gSelectObject['iObj'][tfieldName]}"/>
+                                		  
+                                		<!-- END Inputfields -->
+                                </apex:column>                           
+                            </apex:repeat>      
+                                        
+                        </apex:pageBlockTable>                      
+                    </apex:outputPanel> 
+                </apex:pageBlockSection>    
+                <!-- END EDIT GRID -->      
+            </apex:pageBlockSection>        
+            <!-- END TOP GRIDS -->
+            </apex:outputPanel>
+        </apex:pageblock>
+    </apex:form> 
+    <!-- END FORM -->
+    <apex:outputpanel id="debugstat"> 
+
+</apex:outputpanel>
+</apex:page>

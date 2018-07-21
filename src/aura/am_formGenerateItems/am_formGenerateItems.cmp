@@ -1,0 +1,63 @@
+<aura:component controller="am_formGenerateItemsAURA" >
+  <aura:attribute name="project" type="Project__c"/>
+  <aura:attribute name="itemKeys" type="List"/>
+  <aura:attribute name="itemCollection" type="Map"/>
+  <aura:attribute name="showLevelItemQuantities" type="Boolean" default="false"/>
+  <aura:handler event="c:am_evtSetProject" action="{!c.setProject}"/>
+ 
+  <lightning:spinner class="slds-hide" variant="brand" size="large" aura:id="loadSpinner"/>
+
+  <!-- / PAGE HEADER --> 
+  <div class="slds-page-header"> 
+    <div class="slds-media">
+      <div class="slds-media__figure">
+        <span class="slds-icon_container slds-icon-standard-opportunity" title="Description of icon when needed">
+          <lightning:icon iconName="custom:custom83" size="large" alternativeText="Project Item Generation"/>
+        </span>
+      </div>
+      <div class="slds-media__body">
+        <h1 class="slds-page-header__title slds-truncate slds-align-middle" title="Project Item Generation">Project Item Generation</h1>
+        <p class="slds-text-body_small slds-line-height_reset">Generate items for project levels</p>
+      </div>
+    </div>
+  </div> 
+  <!-- / END PAGE HEADER -->
+
+  <!-- / ITEM SELECTION AND BUTTONS -->
+  <div>
+    <lightning:layout class="slds-m-bottom--small">
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+        <div>
+           <c:am_plistProjects />
+        </div>
+      </lightning:layoutItem>  
+
+    </lightning:layout>
+  </div> 
+  <!-- / END ITEM SELECTION AND BUTTONS -->
+
+  <!-- LEVEL ITEM QUANTITIES-->
+  <aura:if isTrue="{!v.showLevelItemQuantities}">
+    <!-- Table headings -->
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_striped slds-m-top--small">
+      <thead>
+        <tr class="slds-text-title--caps">
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Level">Level</div>
+          </th>
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Type">Type</div>
+          </th>
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Quantity">Quantity</div>
+          </th>
+        </tr>
+      </thead>
+    </table>
+    <aura:iteration items="{!v.itemKeys}" var="key">
+      <c:am_tblGenerateItemLevels mapBacklog="{!v.itemCollection}" key="{!key}"/>
+    </aura:iteration> 
+  </aura:if>
+  <!-- LEVEL ITEM QUANTITIES -->
+  
+</aura:component>

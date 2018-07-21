@@ -1,0 +1,120 @@
+<aura:component >
+  <aura:attribute name="showTimeEntry" type="Boolean" default="false"/>
+  <aura:attribute name="showSprintReview" type="Boolean" default="false"/>
+  <aura:attribute name="showCreateIssue" type="Boolean" default="false"/>
+  <aura:attribute name="showReviewBuild" type="Boolean" default="false"/>
+  <aura:attribute name="showReviewIssue" type="Boolean" default="false"/>
+  <aura:attribute name="showBacklogQueue" type="Boolean" default="false"/>
+  <aura:attribute name="showListBuilder" type="Boolean" default="false"/>
+  <aura:attribute name="showAgileMap" type="Boolean" default="true"/>
+
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+ 
+  <div> 
+    <lightning:layout verticalAlign="center" class="slds-m-bottom_x-small">
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small ">
+        <div>
+          <lightning:button variant="brand" label="Enter Times" onclick="{! c.clickEnterTimes }" />
+        </div>
+      </lightning:layoutItem>  
+
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+        <div>
+          <lightning:button variant="brand" label="Sprint Review" onclick="{! c.clickSprintReview }" />
+        </div> 
+      </lightning:layoutItem>   
+
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+        <div>
+          <lightning:button variant="brand" label="Create Issue" onclick="{! c.clickCreateIssue }" />
+        </div>
+      </lightning:layoutItem>  
+
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+        <div>
+          <lightning:button variant="brand" label="List Builder" onclick="{! c.clickListBuilder }" />
+        </div>
+      </lightning:layoutItem>  
+
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+        <div>
+          <lightning:button variant="brand" label="Agile Map" onclick="{! c.clickAgileMap }" />
+        </div> 
+      </lightning:layoutItem>  
+
+<!-- REFACTORED 1/7/17 FUNCTIONALITY NOW IN SPRINT REVIEW -->
+     <aura:if isTrue="{!v.showReviewBuild}">  
+       <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+         <div>
+           <lightning:button variant="brand" label="Review Build" onclick="{! c.clickReviewIssue }" />
+         </div>
+       </lightning:layoutItem> 
+     </aura:if>
+ 
+     <aura:if isTrue="{!v.showBacklogQueue}">
+       <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+         <div>
+           <lightning:button variant="brand" label="Backlog Queue" onclick="{! c.clickBacklogQueue }" />
+         </div>
+       </lightning:layoutItem> 
+     </aura:if>
+    </lightning:layout> 
+  </div>
+  
+   <aura:if isTrue="{!v.showSprintReview == true}">
+    <form class="slds-form--stacked"> 
+      <div>
+      <c:am_formSprintReview /> 
+      </div>
+    </form>
+  </aura:if> 
+  
+   <aura:if isTrue="{!v.showTimeEntry == true}">
+    <form class="slds-form--stacked">
+      <div>
+      <c:am_formActivityTimeEntry />
+      </div>
+    </form>
+  </aura:if>
+
+   <aura:if isTrue="{!v.showCreateIssue == true}">
+    <form class="slds-form--stacked">
+      <div>
+      <c:am_formIssueCreate />
+      </div>
+    </form>
+  </aura:if> 
+ 
+   <aura:if isTrue="{!v.showReviewIssue == true}">
+    <form class="slds-form--stacked">
+      <div>
+      <c:am_formIssueReview showHeader="true"/>
+      </div>
+    </form>
+  </aura:if>
+
+   <aura:if isTrue="{!v.showBacklogQueue == true}">
+    <form class="slds-form--stacked">
+      <div>
+      <c:am_formBacklogQueue />
+      </div>
+    </form>
+  </aura:if>
+  
+   <aura:if isTrue="{!v.showListBuilder == true}">
+    <form class="slds-form--stacked">
+      <div> 
+      <c:am_formGenerateItems />
+      </div>
+    </form>
+  </aura:if>
+  
+   <aura:if isTrue="{!v.showAgileMap}">
+    <form class="slds-form--stacked">
+      <div> 
+      <c:am_formAgileMap />
+      </div>
+    </form>
+  </aura:if>
+  
+</aura:component>

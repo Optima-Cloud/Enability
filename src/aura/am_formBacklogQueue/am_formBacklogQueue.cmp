@@ -1,0 +1,235 @@
+<aura:component controller="am_BacklogQueueAURA" implements="force:appHostable" >
+  <aura:attribute name="backlogQueue" type="am_BacklogQueueElement[]"/>
+  <aura:attribute name="backlogQueueElements" type="Map"/>
+  <aura:attribute name="backlogQueueKeys" type="List"/>
+  <aura:attribute name="project" type="String" default=""/> 
+  <aura:attribute name="level" type="String" default=""/> 
+  <aura:attribute name="item" type="String" default=""/> 
+  <aura:attribute name="itemId" type="String" default=""/> 
+  <aura:attribute name="sprint" type="String" default=""/> 
+  <aura:attribute name="showBacklog" type="Boolean" default="false"/> 
+  <aura:attribute name="showAggBacklog" type="Boolean" default="false"/> 
+  <aura:attribute name="selectedItems" type="String[]" default=""/> 
+  <aura:attribute name="selectedAggItems" type="String[]" default=""/> 
+  <aura:attribute name="showAddToSprint" type="Boolean" default="false"/> 
+  <aura:attribute name="showAddToSprintForm" type="Boolean" default="false"/>
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+  <aura:handler event="c:am_evtSetSprint" action="{!c.setSprint}"/>
+  <aura:handler event="c:am_evtSetProject" action="{!c.setProject}"/>
+  <aura:handler event="c:am_evtSetLevel" action="{!c.setLevel}"/>
+  <aura:handler event="c:am_evtSetBacklogElement" action="{!c.setItemsSelected}"/>
+
+  <!-- / PAGE HEADER -->
+  <div class="slds-page-header">
+    <div class="slds-media">
+      <div class="slds-media__figure">
+        <span class="slds-icon_container slds-icon-standard-opportunity" title="Description of icon when needed">
+          <lightning:icon iconName="custom:custom18" size="large" alternativeText="Backlog queue"/>
+        </span>
+      </div>
+      <div class="slds-media__body">
+        <h1 class="slds-page-header__title slds-truncate slds-align-middle" title="Backlog Queue">Backlog Queue</h1>
+        <p class="slds-text-body_small slds-line-height_reset">Prioritise and select items to add to sprints</p>
+      </div>
+    </div>
+  </div>
+
+  <lightning:spinner class="slds-hide" variant="brand" size="large" aura:id="loadSpinner"/>
+
+  <div>
+    <lightning:layout >
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+        <div>
+          <c:am_plistProjects />
+        </div>
+      </lightning:layoutItem>  
+
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+        <div>
+          <c:am_plistLevels /> 
+        </div>
+      </lightning:layoutItem>  
+
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+          <div class="slds-col slds-no-flex slds-grid slds-align-top">
+            <div class="slds-button-group" role="group">
+              <lightning:button variant="brand" label="Search" onclick="{!c.getBacklogQueue}" />
+            </div>
+          </div>
+      </lightning:layoutItem>  
+      <aura:if isTrue="{!v.showAddToSprint == true}">
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+          <div class="slds-col slds-no-flex slds-grid slds-align-top">
+            <div class="slds-button-group" role="group">
+              <div aura:id="addToSprintButtonHere" class="slds-text-align--centre"></div>
+            </div>
+          </div>
+      </lightning:layoutItem>  
+        </aura:if>
+    </lightning:layout>
+  </div>
+
+  <!-- AGGREGATE BASED LISTING-->
+    <aura:iteration items="{!v.backlogQueueKeys}" var="key" >
+      <div class="slds-page-header">
+        <div class="slds-grid">
+          <div class="slds-col slds-has-flexi-truncate">
+            <div class="slds-media slds-no-space slds-grow">
+              <div class="slds-media__figure">
+                <span class="slds-icon_container slds-icon-standard-user" title="Description of icon when needed">
+                  <lightning:icon iconName="custom:custom83" size="medium" alternativeText="Review issue"/>
+                </span>
+              </div>
+              <div class="slds-media__body">
+                <p class="slds-text-title_caps slds-line-height_reset">Item Component</p>
+                <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate" title="{!key}">{!key}</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <c:am_tblBacklogElement mapBacklog="{!v.backlogQueueElements}" key="{!key}"/>
+    </aura:iteration>
+  <!-- END AGGREGATE BASED LISTING--> 
+
+  <!-- / BACKLOG TABLE -->
+  <aura:if isTrue="{!v.showBacklog}">
+      <div class="slds-page-header">
+        <div class="slds-grid">
+          <div class="slds-col slds-has-flexi-truncate">
+            <div class="slds-media slds-no-space slds-grow">
+              <div class="slds-media__figure">
+                <span class="slds-icon_container slds-icon-standard-user" title="Description of icon when needed">
+                  <lightning:icon iconName="custom:custom83" size="medium" alternativeText="Review issue"/>
+                </span>
+              </div>
+              <div class="slds-media__body">
+                <p class="slds-text-title_caps slds-line-height_reset">Item Component</p>
+                <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate" title="Individual Items">Individual Items</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_striped slds-m-top--small">
+      <thead>
+        <tr class="slds-text-title--caps">
+          <th scope="col" class="slds-cell-wrap"> 
+            <div class="slds-truncate" title="Select">Select</div>
+          </th>
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Item">Item</div>
+          </th>
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Component">Component</div>
+          </th>
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Issue">Issue</div>
+          </th>
+         <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Last Stage">Last Stage</div>
+          </th>
+         <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Build Stage">Build Stage</div>
+          </th>
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Incomplete">Incomplete</div>
+          </th>
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Started">Started</div>
+          </th>
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Finished">Finished</div>
+          </th>
+          <th scope="col" class="slds-cell-wrap">
+            <div class="slds-truncate" title="Quantity">Quantity</div>
+          </th>
+         </tr>
+      </thead>
+      <tbody>
+        <aura:iteration items="{!v.backlogQueue}" var="list">
+          <tr> 
+            <td scope="row" data-label="Item" class="slds-cell-wrap">
+              <span class="slds-checkbox ">
+                <input class="itemCheckbox" type="checkbox" name="options" id="{!list.itemID}" value="{!list.itemID}" 
+                       checked="" onchange="{!c.onChange}"/>
+                <label class="slds-checkbox__label" for="{!list.itemID}">
+                  <span class="slds-checkbox_faux"></span>
+                  <span class="slds-form-element__label"></span>
+                </label>
+              </span>
+            </td> 
+            <td data-label="Item" class="slds-cell-wrap" >
+              <div class="slds-truncate" title="{!list.itemTitle}">{!list.itemTitle}</div>
+            </td>
+            <td data-label="Component" class="slds-cell-wrap" style="{!'background-color:' + (list.numberFinished == list.quantity ?'#FFC200' : '#ff0000') }">
+              <div class="slds-truncate" title="{!list.componentTitle}">{!list.componentTitle}</div>
+            </td>           
+            <td data-label="Stage" class="slds-cell-wrap">
+              <aura:iteration items="{!list.issueTitle}" var="lists">
+                <div class="slds-truncate" title="{!lists}">{!lists}</div>
+              </aura:iteration>
+            </td>         
+            <td scope="row" data-label="Item" class="slds-cell-wrap">
+              <div class="slds-truncate" title="{!list.lastStage}">{!list.lastStage}</div>
+            </td> 
+            <td scope="row" data-label="Item" class="slds-cell-wrap">
+              <div class="slds-truncate" title="{!list.buildStage}">{!list.buildStage}</div>
+            </td> 
+            <td scope="row" data-label="Item" class="slds-cell-wrap">
+              <div class="slds-truncate" title="{!list.numberIncomplete}">{!list.numberIncomplete}</div>
+            </td> 
+            <td scope="row" data-label="Item" class="slds-cell-wrap">
+              <div class="slds-truncate" title="{!list.numberStarted}">{!list.numberStarted}</div>
+            </td>     
+            <td data-label="Stage" class="slds-cell-wrap">
+              <div class="slds-truncate" title="{!list.numberFinished}">{!list.numberFinished}</div>
+            </td>         
+            <td data-label="Stage" class="slds-cell-wrap">
+              <div class="slds-truncate" title="{!list.quantity}">{!list.quantity}</div>
+            </td>         
+          </tr>
+        </aura:iteration> 
+      </tbody>
+    </table>
+  </aura:if>
+
+    <!-- ADD TO SPRINT BUTTON -->
+   <div>
+    <lightning:layout >
+      <aura:if isTrue="{!v.showAddToSprint == true}">
+        <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+          <div class="slds-col slds-no-flex slds-grid slds-align-top">
+            <div class="slds-button-group" role="group">
+              <div aura:id="addToSprintButtonBottomHere" class="slds-text-align--centre"></div>
+            </div>
+          </div>
+        </lightning:layoutItem>  
+      </aura:if>
+    </lightning:layout>
+  </div>
+    
+    <!-- ADD TO SPRINT MODAL WINDOW -->
+    <div aria-hidden="false" id="addToSprint" class="demo-only" style="display:none; height:640px;" >
+      <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+          <header class="slds-modal__header">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+              <span class="slds-assistive-text">Close</span>
+            </button>
+            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Add to Sprint</h2>
+          </header>
+          <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+            <c:am_plistSprints /> 
+           </div>
+          <footer class="slds-modal__footer">
+            <button class="slds-button slds-button_neutral" onclick="{!c.cancelSprintModal}">Cancel</button>
+            <button class="slds-button slds-button_brand" onclick="{!c.addToSprint}">Add To Sprint</button>
+          </footer>
+        </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+    </div>	
+    <!-- ADD TO SPRINT MODAL WINDOW -->
+
+</aura:component>

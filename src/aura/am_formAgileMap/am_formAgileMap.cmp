@@ -1,0 +1,18 @@
+<aura:component >
+<!-- attributes -->
+  <aura:attribute name="epicList" type="list"/>
+  
+<!-- event handlers -->
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+  <aura:handler name="am_evtEpicChange" event="c:am_evtEpicChange" action="{!c.onEpicChanged}"/>
+
+<!-- resources -->
+  <ltng:require styles="{!$Resource.bulma + '/bulma-0.6.1/css/bulma.css'}" />
+  
+  <div class="columns">
+    <aura:iteration items="{!v.epicList}" var="epics">
+      <c:am_subAgileMapEpic epic="{!epics}"/> 
+    </aura:iteration>
+  </div>
+  
+</aura:component>

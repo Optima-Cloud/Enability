@@ -1,0 +1,17 @@
+<aura:component controller="am_SprintReviewAURA">
+  <aura:attribute name="project" type="string" default=""/>
+  <aura:attribute name="level" type="string" default=""/>
+  <aura:attribute name="sprint" type="string" default=""/>
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+  <aura:handler event="c:am_evtGetAggregateItems" action="{!c.getAggregateItemData}"/>
+  <aura:registerEvent name="am_evtSetAggregateItem" type="c:am_evtSetAggregateItem"/>
+
+  <!-- / SELECT INPUT -->
+
+  <div>
+    <ui:inputSelect multiple="false" label="Select an Aggregate Item" aura:id="selectAggregateItem" disabled="true"
+      class="slds-select" labelClass="slds-form-element__label" change="{!c.setAggregateItem}">
+      <ui:inputSelectOption label="Select a level first..." value="0"/> 
+    </ui:inputSelect>
+  </div>
+</aura:component>

@@ -1,0 +1,18 @@
+<apex:page standardController="Progress__c" extensions="IssueItemsController" sidebar="false" >
+   <apex:form >
+       <apex:actionFunction name="createIssue" action="{!createItemIssue}"/>
+       <apex:pageBlock title="Link the selected item to an issue">
+           <apex:pageBlockButtons >
+               <apex:commandButton onclick="createIssue();return false;" value="Link to item"/>
+               <apex:commandButton action="{!Cancel}" value="Cancel"/>
+           </apex:pageBlockButtons>
+           <apex:pageBlockTable value="{!Issues}" var="I">
+               <apex:column headerValue="Select">
+                   <apex:inputCheckbox value="{!I.selected}" id="checkdone"/>
+               </apex:column>
+               <apex:column value="{!I.Issue.Title__c}"/>
+               <apex:column value="{!I.Issue.Description__c}" />
+           </apex:pageBlockTable> 
+       </apex:pageBlock>
+   </apex:form> 
+</apex:page>

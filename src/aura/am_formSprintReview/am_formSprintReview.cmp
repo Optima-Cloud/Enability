@@ -1,0 +1,138 @@
+<aura:component controller="am_SprintReviewAURA" implements="force:appHostable">
+  <aura:attribute name="aggItemAudits" type="Map"/>
+  <aura:attribute name="itemCollection" type="Map"/>
+  <aura:attribute name="itemKeys" type="List"/>
+  <aura:attribute name="userName" type="String"/>
+  <aura:attribute name="project" type="String"/>
+  <aura:attribute name="level" type="String"/> 
+  <aura:attribute name="sprint" type="String"/> 
+  <aura:attribute name="aggregateItem" type="String"/>
+  <aura:attribute name="item" type="String"/>
+  <aura:attribute name="itemID" type="String"/>
+  <aura:attribute name="itemSelectedForIssue" type="String" default=""/>
+  <aura:attribute name="IssueToRelateTo" type="String[]"/>
+  <aura:attribute name="componentDataToUpdate" type="Boolean" default="false"/>
+  <aura:attribute name="showIssueReviewForm" type="Boolean" default="false"/>
+  <aura:attribute name="showIssueInputForm" type="Boolean" default="false"/>
+  <aura:attribute name="showReviewIssue" type="Boolean" default="false"/>
+  <aura:attribute name="showCreateIssueButton" type="Boolean" default="false"/>
+  <aura:attribute name="showItemForm" type="Boolean" default="false"/>
+  <aura:attribute name="showItemAggregateForm" type="Boolean" default="false"/>
+  <aura:attribute name="issue" type="Issue__c" default="{'sobjectType': 'Issue__c',
+                                                         'Title__c': '', 'Project__c': '' }"/>
+  <aura:attribute name="issueItem" type="Issue_Item__c" default="{'sobjectType': 'Issue_Item__c',
+                                                         'Item__c': '', 'Project__c': '' }"/>
+  <aura:attribute name="issueCreated" type="Boolean" default="false"/>
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+  <aura:handler event="c:am_evtSetItem" action="{!c.setItem}"/>
+  <aura:handler event="c:am_evtSetAggregateItem" action="{!c.setAggregateItem}"/>
+  <aura:handler event="c:am_evtSetSprint" action="{!c.setSprint}"/>
+  <aura:handler event="c:am_evtSetProject" action="{!c.setProject}"/>
+  <aura:handler event="c:am_evtSetLevel" action="{!c.setLevel}"/>
+  <aura:handler event="c:am_evtSetIssue" action="{!c.setIssueToRelateTo}"/>
+  <aura:handler event="c:am_evtCmdSprintReview" action="{!c.cmdHandler}"/>
+  <aura:handler event="c:am_evtSetBuildStage" action="{!c.setStage}"/>
+  <aura:registerEvent name="am_evtResetIssue" type="c:am_evtResetIssue"/>
+  <aura:registerEvent name="am_evtGetIssues" type="c:am_evtGetIssues"/>  
+  <aura:registerEvent name="am_evtSetItem" type="c:am_evtSetItem"/>  
+ 
+  <lightning:spinner class="slds-hide" variant="brand" size="large" aura:id="loadSpinner"/>
+
+  <!-- / PAGE HEADER --> 
+  <div class="slds-page-header">
+    <div class="slds-media">
+      <div class="slds-media__figure">
+        <span class="slds-icon_container slds-icon-standard-opportunity" title="Description of icon when needed">
+          <lightning:icon iconName="custom:custom83" size="large" alternativeText="Sprint Review"/>
+        </span>
+      </div>
+      <div class="slds-media__body">
+        <h1 class="slds-page-header__title slds-truncate slds-align-middle" title="Sprint Review">Sprint Review</h1>
+        <p class="slds-text-body_small slds-line-height_reset">Update items for specific sprints</p>
+      </div>
+    </div>
+  </div> 
+  <!-- / END PAGE HEADER -->
+
+  <!-- / ITEM SELECTION AND BUTTONS -->
+  <div>
+    <lightning:layout class="slds-m-bottom--small">
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+        <div>
+           <c:am_plistProjects />
+        </div>
+      </lightning:layoutItem>  
+
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+        <div>
+          <c:am_plistLevels /> 
+          <c:am_plistSprints /> 
+        </div>
+      </lightning:layoutItem>  
+
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+        <c:am_plistAggregateItem /> 
+        <c:am_plistItems allowableSource="Sprint" />
+      </lightning:layoutItem>  
+
+    </lightning:layout>
+  </div> 
+  <!-- / END ITEM SELECTION AND BUTTONS -->
+
+  <!-- AGGREGATE ITEM BASED LISTING-->
+  <aura:if isTrue="{!v.showItemAggregateForm == true}">
+    <aura:iteration items="{!v.itemKeys}" var="key" indexVar="index">
+      <c:am_tblItemReview mapItems="{!v.itemCollection}" key="{!key}"/>
+    </aura:iteration>
+  </aura:if>
+  <!-- END AGGREGATE ITEM BASED LISTING-->
+
+  <!-- REVIEW ISSUE MODAL WINDOW -->
+  <div id="reviewIssueModalWindow" style="display:none; height:640px;" >
+    <section role="dialog" tabindex="-1" aria-labelledby="reviewmodal-heading-02" aria-describedby="modal-content-id-4" class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container">
+        <header class="slds-modal__header">
+          <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick="{!c.cancelReviewIssueModal}" title="Close">
+            <lightning:icon iconName="utility:close" variant="inverse"/>         
+            <span class="slds-assistive-text">Close</span>
+          </button>
+          <h2 id="reviewmodal-heading-02" class="slds-text-heading_medium slds-hyphenate">Review Issue</h2>
+        </header>
+        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-4">
+          <c:am_formIssueReview notModal="false"/> 
+        </div>
+        <footer class="slds-modal__footer">
+          <button class="slds-button slds-button_neutral" onclick="{!c.cancelReviewIssueModal}">Cancel</button>
+          <button class="slds-button slds-button_brand" onclick="{!c.saveReviewIssueModalData}">Save</button>
+        </footer>
+      </div>
+    </section>
+  </div>
+  <!-- END REVIEW ISSUE MODAL WINDOW -->
+ 
+  <!-- CREATE ISSUE MODAL WINDOW -->
+  <div  id="createIssueModal" style="display:none; height:640px;" >
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container">
+        <header class="slds-modal__header">
+          <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick="{!c.cancelIssueModal}" title="Close">
+            <lightning:icon iconName="utility:close" variant="inverse"/>         
+            <span class="slds-assistive-text">Close</span>
+          </button>
+          <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Create Issue</h2>
+        </header>
+        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+          <label class="slds-form-element__label" for="issueTextTitle">New Issue</label>
+          <ui:inputText aura:id="issueTextTitle" value="{!v.issue.Title__c}"  placeholder="Enter a description of the issue" required="false" class="slds-input" />
+          <c:am_cboxIssues project="{!v.project}" />
+        </div>
+        <footer class="slds-modal__footer">
+          <button class="slds-button slds-button_neutral" onclick="{!c.cancelIssueModal}">Cancel</button>
+          <button class="slds-button slds-button_brand" onclick="{!c.saveIssueModalData}">Save</button>
+        </footer>
+      </div>
+    </section>
+  <div class="slds-backdrop slds-backdrop_open"></div>
+  <!-- END CREATE ISSUE MODAL WINDOW -->
+</div>
+</aura:component>

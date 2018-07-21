@@ -1,0 +1,21 @@
+<apex:page standardController="Issue__c" extensions="IssueItemsController" sidebar="false"  >
+   <apex:form >
+     <div class="SLDS_Spring17">
+       <apex:stylesheet value="{!URLFOR($Resource.SLDSSpring17, 'assets/styles/salesforce-lightning-design-system-vf.min.css')}" />
+       <apex:actionFunction name="createIssue" action="{!createItemIssueFromIssue}"/>
+       <apex:pageBlock title="Link the selected issue to an item">
+         <apex:pageBlockButtons >
+           <apex:commandButton styleClass="slds-button slds-button--brand slds-button--neutral slds-not-selected" onclick="createIssue();return false;" value="Link to item"/>
+           <apex:commandButton styleClass="slds-button slds-button--brand slds-button--neutral slds-not-selected" action="{!Cancel}" value="Cancel"/>
+         </apex:pageBlockButtons>
+         <apex:dataTable value="{!Items}" var="I" id="theTable" cellpadding="5" styleClass="slds-table slds-table--bordered slds-table--striped">    
+           <apex:column headervalue="Select">
+             <apex:inputCheckbox value="{!I.selected}" id="checkdone"/>
+           </apex:column>
+           <apex:column value="{!I.Item.Name}" headervalue="Item"/>
+           <apex:column value="{!I.Item.Level__c}" headervalue="Level"/>
+         </apex:dataTable>
+       </apex:pageBlock>
+     </div>
+   </apex:form> 
+</apex:page>

@@ -1,0 +1,12 @@
+<aura:component controller="am_ActivityTimeEntryLG">
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+  <aura:registerEvent name="am_evtSetStaff" type="c:am_evtSetStaff"/>
+
+  <!-- / SELECT INPUT -->
+  <div>
+    <ui:inputSelect multiple="false" label="Select a Staff Member" aura:id="selectStaff" 
+      class="slds-select" labelClass="slds-form-element__label" change="{!c.onSelect}">
+        <ui:inputSelectOption label="Options are loading..." value="0"/>
+    </ui:inputSelect>
+  </div>
+</aura:component>

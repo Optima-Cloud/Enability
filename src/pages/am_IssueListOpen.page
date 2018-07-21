@@ -1,0 +1,19 @@
+<apex:page standardController="Issue__c" recordSetVar="issues" extensions="IssuesController" renderAs="pdf"  applyHtmlTag="false" showHeader="false">
+    <apex:stylesheet value="{!URLFOR($Resource.LE_Stylesheet, 'pdfstyle.css')}"/> 
+    <apex:pageBlock title="Open Issues List - Summary produced on {!TODAY()}" />
+    <apex:variable var="cnt" value="{!0}" />
+    <apex:repeat value="{!paginatedIssues}" var="aPageOfIssues" id="theList">
+        <div style="{!if(cnt < 1, 'page-break-before:avoid;','page-break-before:always;')}">
+            <apex:variable var="cnt" value="{!cnt+1}"/>
+            <apex:dataTable value="{!aPageOfIssues}" var="i" id="theTable" cellpadding="5" headerClass="TableTitle" rowClasses="rowFormat1,rowFormat2" rules="all" border="1"
+                            columns="6" width="1000px" columnsWidth="10%, 15%, 35%, 20%, 10%, 10%">    
+                <apex:column value="{!i.Name}" headerValue="Number" />
+                <apex:column value="{!i.Title__c}" headerValue="Summary" />
+                <apex:column value="{!i.Description__c}" headerValue="Description" />
+                <apex:column value="{!i.Next_Step__c}" headerValue="Next Step"/>
+                <apex:column value="{!i.Responsible_Person__c}" headerValue="Responsibility" />
+                <apex:column value="{!i.Date_Created__c}" headerValue="Created" />
+            </apex:dataTable>
+            </div> 
+    </apex:repeat> 
+</apex:page>

@@ -1,0 +1,96 @@
+<aura:component controller="am_SprintReviewAURA">
+  <aura:attribute name="mapItems" type="map"/>
+  <aura:attribute name="key" type="string"/>
+  <aura:attribute name="auditItems" type="string"/>
+  <aura:attribute name="item" type="string"/>
+  <aura:attribute name="issues" type="string"/>
+  <aura:attribute name="testfield" type="string" />
+  <aura:attribute name="allFinished" type="boolean" default="false"/>
+  <aura:attribute name="issuesExist" type="boolean" default="false"/>
+  <aura:attribute name="buildStages" type="string[]"/>
+  <aura:attribute name="buildStage" type="string"/>
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+  <aura:registerEvent name="am_evtCmdSprintReview" type="c:am_evtCmdSprintReview"/>  
+  <aura:registerEvent name="am_evtSetBuildStage" type="c:am_evtSetBuildStage"/>  
+ 
+  <!-- ITEM BASED -->
+  <div class="slds-page-header">
+    <div class="slds-grid">
+      <div class="slds-col slds-has-flexi-truncate">
+        <div class="slds-media slds-no-space slds-grow">
+          <div class="slds-media__figure">
+            <span class="slds-icon_container slds-icon-standard-user" title="Description of icon when needed">
+              <lightning:icon iconName="custom:custom83" size="medium" alternativeText="Review"/>
+            </span>
+          </div>
+          <div class="slds-media__body">
+            <p class="slds-text-title_caps slds-line-height_reset">Item</p>
+            <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate" title="{!item}">{!v.item.itemTitle}</h1>
+          </div>
+        </div>
+      </div>
+      <div class="slds-col slds-no-flex slds-grid slds-align-top">
+        <lightning:select class="buildStagePicklist" name="{!item}" label="Program Stage" variant="label-hidden" aura:id="{!item}" value="{!v.buildStage}" onchange="{!c.setStage}" >
+          <aura:iteration items="{!v.buildStages}" var="listStages"> 
+            <option text="{!listStages}"  />
+          </aura:iteration>
+        </lightning:select>
+      <div class="slds-button-group" role="group">
+        <aura:if isTrue="{!v.issuesExist == true}">
+          <lightning:button variant="neutral" label="Review Issues" name="{!key}" onclick="{!c.reviewIssueModal }" />
+        </aura:if>
+          <lightning:button variant="neutral" label="Create Issue" name="{!key}" onclick="{!c.newIssueModal }" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_fixed-layout slds-table_striped ">
+    <thead>
+      <tr class="slds-text-title--caps">
+        <td data-label="Name" width="43%">
+          <div class="slds-truncate" title="Component">Component</div>
+        </td>
+        <th scope="col"  width="15%">
+          <div class="slds-truncate" title="Stage">Stage</div>
+        </th>
+        <th scope="col" width="10%">
+          <div class="slds-truncate" title="Quantity">Quantity</div>
+        </th>
+        <th scope="col" width="12%">
+          <lightning:input type="checkbox" class="slds-truncate" aura:id="allFinished" label="All Finished" name="{!v.item.itemTitle}" value="{!v.allFinished}" onchange="{!c.allFinished}"/>
+        </th>
+         <th scope="col" width="10%">
+          <div class="slds-truncate" title="Finished">Finished</div>
+        </th>
+        <th scope="col" width="10%">
+          <div class="slds-truncate" title="Started">Started</div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <aura:iteration items="{!v.auditItems}" var="item">
+        <tr> 
+          <td data-label="Name">
+            <div class="slds-truncate" title="{!item.Item_Component_Name__c}">{!item.Item_Component_Name__c}</div>
+          </td>
+           <td data-label="Stage">
+            <div class="slds-truncate" title="{!item.Stage__c}">{!item.Stage__c}</div>
+          </td>         
+          <td data-label="Quantity">
+            <div class="slds-truncate" title="{!item.Quantity__c}" style="{!'background-color:' + (item.Number_Started__c > 0 ? '#FFC200' : (item.Number_Finished__c == item.Quantity__c ? '#00ff00' : '#ff0000')) }" >{!item.Quantity__c}</div>
+          </td>
+          <td> 
+            <lightning:input type="checkbox" class="slds-truncate" variant="label-hidden" label="All Finished" name="{!item.Id}" aura:id="cboxFinished" onchange="{!c.oneFinished}"/>
+          </td>
+          <td data-label="Finished">
+            <lightning:input type="Number" variant="label-hidden" min="0" max="{!item.Quantity__c}" label="Qty Finished" name="{!item.Id}" value="{!item.Number_Finished__c}" aura:id="icuQuantityFinished" onchange="{!c.quantityChanged}"/>
+          </td> 
+          <td data-label="Started"> 
+            <lightning:input type="Number" variant="label-hidden" min="0" max="{!item.Quantity__c}" label="Qty Started" name="{!item.Id}" value="{!item.Number_Started__c}" aura:id="icuQuantityStarted" onchange="{!c.quantityChanged}"/>
+          </td> 
+        </tr>
+      </aura:iteration> 
+    </tbody>
+  </table>
+  <!-- END ITEM BASED -->
+ </aura:component>

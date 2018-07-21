@@ -1,0 +1,143 @@
+<apex:page controller="PEN.KPickAnythingConfigCon" >
+
+
+<style>
+.divbutton {
+    
+    background-color: #336699;
+    color: #ffffff;
+    text-align:center;
+    display:inline;
+    text-decoration: none;
+  -moz-border-radius: 7px;
+  -webkit-border-radius: 7px;
+  border: 2px solid #225588;
+  padding: 7px;
+  width: 100px;
+}
+
+li {
+    padding-bottom:1em;
+    
+}	
+
+</style>
+
+    <apex:sectionHeader title="" subtitle="PickAnything Configuration"/>
+    <apex:messages ></apex:messages>
+     
+    <apex:form >
+    
+        
+    
+  <apex:outputpanel >
+        <apex:actionstatus id="pickstatus">
+            <apex:facet name="start">
+                <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb;
+                       height: 100%;opacity:0.65;width:100%;"> 
+                    <div class="waitingHolder" style="top: 74.2px; width: 91px;">
+                        <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                        <span class="waitingDescription">Please Wait...</span>
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionstatus>
+    </apex:outputpanel>
+        
+       
+        <apex:pageBlock title="Create New Configuration" >
+        <apex:outputLink id="createLink" value="/apex/PEN__KPickAnythingConfigEdit">+ Create New</apex:outputLink>
+        </apex:pageBlock>
+        
+        <apex:repeat value="{!gtmpConfig}" var="xVarConfig">               
+            <apex:pageBlock title="{!xVarConfig.name}">
+                <apex:pageBlockButtons location="top">
+                    <apex:outputpanel >
+                     <apex:outputLink id="editLink" styleclass="btn" style="text-decoration: none;" value="/apex/PEN__KPickAnythingConfigEdit?id={!xVarConfig.Id}&returl=/apex/PEN__KPickAnythingConfig">Edit Configuration</apex:outputLink>
+          
+                    
+                     <apex:commandLink id="deleteLink" styleclass="btn" style="text-decoration: none;" value="Delete" action="{!doDelete}">
+                     
+                        <apex:param name="gDeleteId" value="{!xVarConfig.id}" assignTo="{!gDeleteId}"/>
+                     
+                     </apex:commandLink>
+                               
+                    &nbsp;
+					
+					<apex:commandLink id="generatedButton" styleclass="btn" style="text-decoration: none;" action="{!doGenerateButton}" value="Generate Button">
+					    <apex:param name="gButtonGenerateId" value="{!xVarConfig.id}" assignTo="{!gButtonGenerateId}"/>                     
+					</apex:commandLink>
+					
+                    </apex:outputpanel>
+                </apex:pageBlockButtons>
+                
+                <apex:pageblocksection >                      
+                    <apex:outputField value="{!xVarConfig.name}"/>
+                    <apex:outputField value="{!xVarConfig.Id}"/>
+                    <apex:outputField value="{!xVarConfig.PEN__KPageName__c}"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection >
+                    <apex:outputField label="Parent Object Name" value="{!xVarConfig.PEN__KParentObjName__c}"/>
+                    <apex:outputField label="Junction Object Name" value="{!xVarConfig.PEN__KJunctionObjName__c}"/>
+                    <apex:outputField label="Child Object Name" value="{!xVarConfig.PEN__KChildObjName__c}"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection >                    
+                    <apex:outputField label="Parent Object Definition Id" value="{!xVarConfig.PEN__KParentObjId__c}"/>
+                    <apex:outputField label="Junction Object Definition Id" value="{!xVarConfig.PEN__KJunctionObjId__c}"/>
+                    <apex:outputField label="Child Object Definition Id" value="{!xVarConfig.PEN__KChildObjId__c}"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection >
+                    <apex:outputField label="Parent Object Fieldset" value="{!xVarConfig.PEN__KParentObjFS__c}"/>
+                    <apex:outputField label="Junction Object Fieldset"  value="{!xVarConfig.PEN__KJunctionObjFS__c}"/>
+                    <apex:outputField label="Child Object Fieldset"  value="{!xVarConfig.PEN__KChildObjFS__c}"/>                 
+                </apex:pageblocksection>
+            </apex:pageBlock> 
+       </apex:repeat>  
+        
+   </apex:form>       
+   		<apex:pageBlock title="Getting Started With Pick Anything">
+   		  	<apex:pageBlockSection title="Instuctions" collapsible="false" columns="1">       
+	    		<!-- Instructions -->
+	    		 			
+			    <ol  type="1">
+				    <li>
+						Ensure object relationships and fieldsets are configured
+						<br/><br/>
+						Before starting to configure PickAnything please ensure the Parent, Junction and Child objects are configured together along with field sets to define the fields to be used on the three objects.  Note that objects do not have fieldsets on them by default.  Please navigate to the appropriate object setup screen and add the necessary fieldset.   	
+				    </li>
+				    <li>		    
+					   Click on the Create New button above
+				    </li>
+				    <li>		    
+				    	Select the Parent object. This is the object your users will be launching PickAnything from				    
+				    </li>
+				    <li>		    
+				    	Select the Junction object. This is the object that links the parent and child object				    
+				    </li>
+				    <li>		    
+				    	Choose the field that links the Junction object to the Child object				    
+				    </li>
+				    <li>		    
+				    	Setup | Customize | [PARENT RECORD] | Page Layouts | Click Edit next to your layout
+				    </li>
+				    <li>
+				     	From the layout editor go to the related list and add the buttons
+				    </li>
+			    </ol>
+	        
+	        </apex:pageBlockSection>
+   		<apex:pageBlockSection title="PickAnything Extensions" collapsible="false" columns="1">
+   		
+   			<br/>   		
+			Install Opportunity Product extension for PickAnything: <a style="font-weight:bold" href="https://appexchange.salesforce.com/listingDetail?listingId=a0N30000000pti2EAA">Click here to Get it Now</a>
+			<br/>
+			<br/>
+			Install Quote Product extension for PickAnything: <a style="font-weight:bold" href="https://appexchange.salesforce.com/listingDetail?listingId=a0N30000000ptvVEAQ">Click here to Get it Now</a><br/>		
+		</apex:pageblockSection>
+ 	   	
+ 	   	<apex:pageBlockSection title="PickAnything Support" collapsible="false" columns="1">
+ 	   		<a href="mailto:support@prettyengine.com?subject=Pretty Engine info: {!$Organization.Name}">Contact Info at Pretty Engine, the makers of PickAnything</a>
+ 	   	</apex:pageBlockSection>	
+	     
+	        </apex:pageBlock> 
+</apex:page>

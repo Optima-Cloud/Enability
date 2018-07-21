@@ -1,0 +1,4 @@
+<!--c:am_evtSetAggregateItem-->
+<aura:event type="APPLICATION">
+    <aura:attribute name="aggregateItemSelected" type="String"/>
+</aura:event>

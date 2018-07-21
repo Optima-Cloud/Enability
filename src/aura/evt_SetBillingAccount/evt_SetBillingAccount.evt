@@ -1,0 +1,4 @@
+<!--c:evt_SetBillingAccount-->
+<aura:event type="APPLICATION">
+    <aura:attribute name="billingAccount" type="String"/>
+</aura:event>

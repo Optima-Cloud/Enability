@@ -1,0 +1,6 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" >
+
+    <c:test1 />
+    <c:test2 />
+
+</aura:component>

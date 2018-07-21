@@ -1,0 +1,4 @@
+<!--c:am_evtSetSprint-->
+<aura:event type="APPLICATION">
+    <aura:attribute name="sprintSelected" type="String"/>
+</aura:event>

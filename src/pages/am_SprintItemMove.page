@@ -1,0 +1,46 @@
+<apex:page standardController="Sprint_Items__c" extensions="am_SprintItemExt" recordSetVar="selectedSprintItems">
+  <apex:form > 
+    <apex:actionFunction name="moveSprintItems"  action="{!pageHandler}" rerender="" oncomplete="gotopg();"> 
+      <apex:param name="callAction" id="test" value="moveSprintItems" /> 
+    </apex:actionFunction>
+
+    <apex:pageBlock title="Move items to another Sprint">
+      <apex:pageBlockButtons >
+        <apex:commandButton onclick="CheckSelected();return false;" value="Move item to another sprint"/>
+        <apex:commandButton action="{!Cancel}" value="Cancel"/>
+      </apex:pageBlockButtons>
+
+      <p>Select the sprint from the list below that you would like to move the following items to: </p>
+      <br/>  
+      <apex:OutputPanel >
+        <apex:selectList value="{!sprint}" size="1" title="Status" onchange="sprintSelected();">
+          <apex:selectOptions value="{!SprintList}"></apex:selectOptions>
+        </apex:selectList>
+        <br/>
+        <br/>  
+      </apex:OutputPanel>
+      <apex:pageBlockTable value="{!selectedSprintItems}" var="Item">
+        <apex:column value="{!Item.Name}"/>
+        <apex:column value="{!Item.Sprint__c}" headerValue="Current Sprint"/>
+        <apex:column value="{!Item.Item__c}"/>
+        <apex:column value="{!Item.Level__c}"/>
+        <apex:column value="{!Item.Wing__c}"/>
+        <apex:column value="{!Item.Item_Status__c}"/>
+      </apex:pageBlockTable> 
+    </apex:pageBlock>
+  </apex:form>    
+  <script>
+    var sprintPicked = 0;
+
+    function CheckSelected(){
+      if(sprintPicked==0)
+        alert('Select a Sprint from the List');
+      else
+        moveSprintItems();
+    }
+      
+    function sprintSelected(){
+      sprintPicked++; 
+    }
+  </script> 
+</apex:page>

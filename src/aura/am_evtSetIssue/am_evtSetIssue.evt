@@ -1,0 +1,4 @@
+<!--c:am_evtSetIssue-->
+<aura:event type="APPLICATION">
+    <aura:attribute name="issuesSelected" type="String[]"/> 
+</aura:event>

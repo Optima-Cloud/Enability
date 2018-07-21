@@ -1,0 +1,6 @@
+<!-- am_evtEpicChange.evt -->
+<aura:event type="COMPONENT" description="Event fired whenever an item is dropped on an epic">
+    <aura:attribute type="String" name="type"/> 
+    <aura:attribute type="String" name="title"/> 
+    <aura:attribute type="Object" name="item"/>
+</aura:event>

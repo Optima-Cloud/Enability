@@ -1,0 +1,73 @@
+<apex:page standardController="Progress__c" extensions="am_ItemExt" recordSetVar="Dummy" sidebar="false">
+  <head>
+    <apex:slds />
+  </head>
+  <apex:form > 
+    <apex:actionFunction name="addSprintItem" action="{!pageHandler}" rerender="">
+      <apex:param name="callAction" value="addSprintItems"/>
+    </apex:actionFunction>    
+
+    <apex:pageMessages />
+    
+    <div class="SLDS-scope">
+      <div class="slds-page-header">
+        <div class="slds-grid">
+          <div class="slds-col slds-has-flexi-truncate">
+            <nav class="slds-m-bottom--xx-small" role="navigation" aria-label="Breadcrumbs">
+              <ol class="slds-breadcrumb slds-list--horizontal">
+                <li class="slds-breadcrumb__item slds-text-title--caps"><a href="javascript:void(0);">Items</a></li>
+              </ol>
+            </nav>
+            <h1 class="slds-page-header__title slds-truncate" title="Add items to Sprint">Add items to Sprint</h1>
+          </div>
+          <div class="slds-col slds-no-flex slds-grid slds-align-top">
+            <div class="slds-button-group">
+              <apex:commandButton onclick="CheckSelected();return false;" value="Add items to sprint" styleClass="slds-button slds-button--neutral"/>
+              <apex:commandButton action="{!Cancel}" value="Cancel" styleClass="slds-button slds-button--neutral"/>
+            </div>
+          </div>
+        </div>
+      </div> 
+      <br/>  
+
+      <div class="slds-grid">
+        <div class="slds-col">
+          <div class="slds-box slds-box--small slds-theme--shade slds-text-align--left">
+            <div class="slds-text-title--medium">Select the sprint:</div>
+            <apex:OutputPanel Id="sprintBox">
+              <apex:selectList value="{!sprint}" size="1" title="Status" onchange="sprintSelected();" >
+                <apex:selectOptions value="{!SprintList}"></apex:selectOptions>
+              </apex:selectList>
+            </apex:OutputPanel>
+            <br/> 
+            <br/>  
+
+            <apex:dataTable value="{!selectedItems}" var="Item"  cellpadding="5" styleClass="slds-table slds-table--bordered slds-table--striped">
+              <apex:column value="{!Item.Name}" headervalue="Item"/>
+              <apex:column value="{!Item.Level__c}" headervalue="Level"/>
+              <apex:column value="{!Item.Wing__c}" headervalue="Wing"/>
+              <apex:column value="{!Item.Item_Status_New__c}" headervalue="Status"/>
+            </apex:dataTable>
+            <br/>  
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </apex:form>
+
+  <script>
+    var sprintPicked = 0;
+
+    function CheckSelected(){
+      if(sprintPicked==0)
+        alert('Select a Sprint from the List');
+      else
+        addSprintItem();
+    }
+      
+    function sprintSelected(){
+      sprintPicked++; 
+    }
+ </script>          
+</apex:page>

@@ -1,0 +1,147 @@
+<aura:component controller="am_ActivityTimeEntryLG">
+  <aura:attribute name="project" type="String"/>
+  <aura:attribute name="sprint" type="String"/> 
+  <aura:attribute name="item" type="String"/>
+  <aura:attribute name="workDate" type="DateTime" default=""/>
+  <aura:attribute name="staffActivity" type="Staff_Activity__c" default="{'sobjectType': 'Staff_Activity__c',
+                                                         'Activity__c': '', 'Time_Worked__c': '', 
+                                                         'Description': '', 'Date__c': '' }"/>
+  <aura:attribute name="staffActivities" type="Staff_Activity__c[]"/> 
+  <aura:attribute name="activities" type="List" access="private"/>
+  <aura:attribute name="activityId" type="String" default=""/> 
+  <aura:attribute name="activityName" type="String" default=""/>
+  <aura:attribute name="activityHours" type="Decimal" /> 
+  <aura:attribute name="staff" type="String" default=""/>
+  <aura:attribute name="selectedActivity" type="Boolean" default="false"/>
+  <aura:attribute name="selectedStaff" type="Boolean" default="false"/>
+  <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+  <aura:handler event="c:am_evtSetActivity" action="{!c.setActivity}" value="{!this}"/>
+  <aura:handler event="c:am_evtSetStaff" action="{!c.setStaff}" value="{!this}"/>
+  <aura:handler event="c:am_evtSetProject" action="{!c.setProject}"/>
+  <aura:handler event="c:am_evtSetSprint" action="{!c.setSprint}"/>
+  <aura:handler event="c:am_evtSetItem" action="{!c.setItem}"/>
+  <aura:registerEvent name="am_evtSetStaffActivity" type="c:am_evtSetStaffActivity"/>
+  <aura:registerEvent name="am_evtResetActivity" type="c:am_evtResetActivity"/>
+ 
+  <!-- / PAGE HEADER  -->
+  <div class="slds-page-header" role="banner">  
+      <div class="slds-grid">
+        <div class="slds-col">
+          <p class="slds-text-heading--label">Time Entry</p>
+          <h1 class="slds-text-heading--medium">Enter hours worked against activities in sprint</h1>
+        </div>
+      </div>
+  </div>
+
+  <!-- / PROJECT AND SPRINT SELECTION -->
+  <div>
+    <lightning:layout >
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small slds-size--1-of-3 slds-medium-size--2-of-6 slds-large-size--2-of-12">
+        <div>
+          <c:am_plistProjects />
+        </div>
+      </lightning:layoutItem>  
+
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small  slds-size--1-of-3 slds-medium-size--2-of-6 slds-large-size--2-of-12">
+        <div>
+          <c:am_plistStaff />
+        </div>
+      </lightning:layoutItem>  
+
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small  slds-size--1-of-3 slds-medium-size--2-of-6 slds-large-size--2-of-12">
+        <div style="white-space: nowrap">
+          <ui:inputDate aura:id="selectDate" label="Date" class="field" labelClass="slds-form-element__label" value="{!v.workDate}" displayDatePicker="true" />
+        </div>
+      </lightning:layoutItem>  
+
+     </lightning:layout>
+  </div>
+
+  <!-- / ITEM SELECTION -->
+ <div>
+    <lightning:layout >
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small  slds-size--1-of-3 slds-medium-size--2-of-6 slds-large-size--2-of-12">
+        <div>
+          <c:am_plistSprints />
+        </div>
+      </lightning:layoutItem>  
+
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small  slds-size--1-of-3 slds-medium-size--2-of-6 slds-large-size--2-of-12">
+        <div>
+          <c:am_plistItems allowableSource="Sprint"/>
+        </div>
+      </lightning:layoutItem>  
+     </lightning:layout>
+  </div>
+
+  <!-- / ACTIVITY SELECTION -->
+   <div>
+     <lightning:layout >
+       <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+         <div>
+            <c:am_rdoActivity />
+         </div>
+       </lightning:layoutItem>  
+
+       <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small slds-size--1-of-3 slds-medium-size--2-of-6 slds-large-size--1-of-12">
+         <div>
+           <ui:inputSelect aura:id="selectHours" label="Hours" class="slds-select" labelClass="slds-form-element__label" multiple="false">
+             <ui:inputSelectOption text="0" label="0"/>
+             <ui:inputSelectOption text="1" label="1" value="true"/>
+             <ui:inputSelectOption text="2" label="2"/>
+             <ui:inputSelectOption text="3" label="3"/>
+             <ui:inputSelectOption text="4" label="4"/>
+             <ui:inputSelectOption text="5" label="5"/>
+             <ui:inputSelectOption text="6" label="6"/>
+             <ui:inputSelectOption text="7" label="7"/>
+             <ui:inputSelectOption text="8" label="8"/>
+             <ui:inputSelectOption text="9" label="9"/>
+             <ui:inputSelectOption text="10" label="10"/>
+             <ui:inputSelectOption text="11" label="11"/>
+             <ui:inputSelectOption text="12" label="12"/>
+           </ui:inputSelect>
+         </div>
+       </lightning:layoutItem>  
+
+       <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small slds-size--1-of-3 slds-medium-size--2-of-6 slds-large-size--1-of-12">  
+         <div>
+           <ui:inputSelect aura:id="selectMinutes"  class="slds-select" label="Minutes" labelClass="slds-form-element__label" multiple="false">
+             <ui:inputSelectOption text="0" label="15"/>
+             <ui:inputSelectOption text="15" label="15" value="true"/>
+             <ui:inputSelectOption text="30" label="30"/>
+             <ui:inputSelectOption text="45" label="45"/>
+           </ui:inputSelect>
+         </div>
+       </lightning:layoutItem>  
+
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+        <div>
+          <lightning:button variant="brand" label="Enter Activity" onclick="{!c.clickAddTime}" />
+        </div>
+      </lightning:layoutItem>  
+     </lightning:layout>
+   </div>
+  <!-- / SUMMARY OF DATA ENTERED -->
+     <lightning:layout >
+       <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+         <div>
+            <c:am_tblActivity />
+         </div>
+       </lightning:layoutItem>  
+    </lightning:layout>
+
+     <lightning:layout >
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+        <div>
+          <lightning:button variant="brand" label="Save Day Times" onclick="{!c.clickSaveTime}" />
+        </div>
+      </lightning:layoutItem>  
+ 
+      <lightning:layoutItem class="slds-box slds-box--small slds-theme--shade slds-m-left--x-small slds-m-top--small">
+        <div>
+          <lightning:button variant="brand" label="Clear Day Times" onclick="{!c.clickResetAll}" />
+        </div>
+      </lightning:layoutItem>  
+    </lightning:layout>
+ 
+</aura:component>

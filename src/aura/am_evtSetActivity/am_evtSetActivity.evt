@@ -1,0 +1,4 @@
+<!--c:am_evtSetActivity-->
+<aura:event type="APPLICATION">
+    <aura:attribute name="activitySelected" type="Staff_Activity__c[]"/>
+</aura:event>
